@@ -28,6 +28,7 @@ const LocalGuardianSchema = z.object({
 // Zod schema for TStudent
 const StudentValidationSchema = z.object({
   id: z.string(),
+  password: z.string(),
   name: UserNameSchema,
   gender: z.enum(['male', 'female', 'others']),
   email: z.string().email(),

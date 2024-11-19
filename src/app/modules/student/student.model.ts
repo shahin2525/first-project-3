@@ -1,10 +1,13 @@
 import { Schema, model } from 'mongoose';
+import bcrypt from 'bcryptjs';
 import {
+  StudentModel,
   TGuardian,
   TLocalGuardian,
   TStudent,
   TUserName,
 } from './student.interface';
+import config from '../../config';
 
 // UserName schema
 const UserNameSchema = new Schema<TUserName>({
@@ -32,28 +35,63 @@ const LocalGuardianSchema = new Schema<TLocalGuardian>({
 });
 
 // Main Student schema
-const StudentSchema = new Schema<TStudent>({
-  id: { type: String, required: true, unique: true },
-  name: { type: UserNameSchema, required: true },
-  gender: { type: String, enum: ['male', 'female', 'others'], required: true },
-  email: { type: String, required: true, unique: true },
-  dataOfBirth: { type: String, required: true },
-  contactNo: { type: String, required: true },
-  emergencyContactNo: { type: String, required: true },
-  BloodGroup: {
-    type: String,
-    enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
+const StudentSchema = new Schema<TStudent, StudentModel>(
+  {
+    id: { type: String, required: true, unique: true },
+    password: { type: String },
+    name: { type: UserNameSchema, required: true },
+    gender: {
+      type: String,
+      enum: ['male', 'female', 'others'],
+      required: true,
+    },
+    email: { type: String, required: true, unique: true },
+    dataOfBirth: { type: String, required: true },
+    contactNo: { type: String, required: true },
+    emergencyContactNo: { type: String, required: true },
+    BloodGroup: {
+      type: String,
+      enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
+    },
+    presentAddress: { type: String, required: true },
+    permanentAddress: { type: String, required: true },
+    guardian: { type: GuardianSchema, required: true },
+    localGuardian: { type: LocalGuardianSchema, required: true },
+    profileImg: { type: String },
+    isActive: { type: String, enum: ['active', 'blocked'], required: true },
   },
-  presentAddress: { type: String, required: true },
-  permanentAddress: { type: String, required: true },
-  guardian: { type: GuardianSchema, required: true },
-  localGuardian: { type: LocalGuardianSchema, required: true },
-  profileImg: { type: String },
-  isActive: { type: String, enum: ['active', 'blocked'], required: true },
+  {
+    timestamps: true,
+  },
+);
+// does user exists
+StudentSchema.statics.doesUserExists = async function (id: string) {
+  const existingUser = await Student.findById(id);
+  return existingUser;
+};
+// does not user Exists
+StudentSchema.statics.doesNotUserExists = async function (id: string) {
+  const notExistingUser = await Student.findById(id);
+  return !notExistingUser;
+};
+
+// to password bcrypt
+StudentSchema.pre('save', async function (next) {
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  const user = this;
+  const salt = bcrypt.genSaltSync(Number(config.bcrypt));
+  user.password = await bcrypt.hash(user.password, salt);
+  // user.password = await bcrypt.hash(user.password,bcrypt.genSaltSync(Number(config.bcrypt)))
+  next();
+});
+// to password empty
+StudentSchema.post('save', async function (doc, next) {
+  // console.log(doc);
+  doc.password = '';
+  next();
 });
 
 // Exporting the Student model
-const Student = model<TStudent>('Student', StudentSchema);
-// 3. Create a Model.
-// const User = model<IUser>('User', userSchema);
+const Student = model<TStudent, StudentModel>('Student', StudentSchema);
+
 export default Student;
