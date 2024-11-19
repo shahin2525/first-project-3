@@ -62,8 +62,24 @@ const StudentSchema = new Schema<TStudent, StudentModel>(
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true },
   },
 );
+// {
+//   virtuals: {
+//     fullName: {
+//       get() {
+//         return `${this.firstName} ${this.lastName}`;
+//       },
+//       // virtual setter and options can be defined here as well.
+//     },
+//   },
+// },
+// virtual type
+const virtual = StudentSchema.virtual('fullName');
+virtual.get(function () {
+  return this.name.firstName + ' ' + this.name.lastName;
+});
 // does user exists
 StudentSchema.statics.doesUserExists = async function (id: string) {
   const existingUser = await Student.findById(id);
