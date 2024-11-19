@@ -29,8 +29,26 @@ const getAllStudent: RequestHandler = async (req, res, next: NextFunction) => {
     next(error);
   }
 };
+const getSingleStudent: RequestHandler = async (
+  req,
+  res,
+  next: NextFunction,
+) => {
+  try {
+    const id = req.params.id;
+    const result = await StudentServices.getSingleStudentFromDB(id);
+    res.status(200).json({
+      success: true,
+      message: 'get single student successfully',
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const StudentController = {
   createStudent,
   getAllStudent,
+  getSingleStudent,
 };

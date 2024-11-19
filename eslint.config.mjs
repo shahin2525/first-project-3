@@ -5,6 +5,11 @@ import tseslint from 'typescript-eslint';
 /** @type {import('eslint').Linter.Config[]} */
 export default [
   { files: ['**/*.{js,mjs,cjs,ts}'] },
+  // {
+  //   env: {
+  //     node: true, // Enable Node.js global variables like process
+  //   },
+  // },
   { languageOptions: { globals: globals.browser } },
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
@@ -13,9 +18,25 @@ export default [
     rules: {
       'no-unused-vars': 'error',
       'no-unused-expressions': 'error',
+      '@typescript-eslint/no-unused-expressions': [
+        'error',
+        { allowShortCircuit: true, allowTernary: true },
+      ],
       'prefer-const': 'error',
       'no-console': 'warn',
       'no-undef': 'error',
+    },
+    // globals: {
+    //   process: 'readonly',
+    // },
+    languageOptions: {
+      ecmaVersion: 2022,
+      sourceType: 'module',
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+        process: 'readonly',
+      },
     },
   },
 ];
