@@ -37,11 +37,11 @@ export type TStudent = {
   localGuardian: TLocalGuardian;
   profileImg?: string;
   isActive: 'active' | 'blocked';
-  idDeleted: boolean;
+  isDeleted: boolean;
 };
 export interface StudentModel extends Model<TStudent> {
   // eslint-disable-next-line no-unused-vars
-  doesUserExists(id: string): Promise<boolean | null>;
+  doesUserExists(_id: string): Promise<boolean | null>;
 }
 export interface StudentModel extends Model<TStudent> {
   // eslint-disable-next-line no-unused-vars

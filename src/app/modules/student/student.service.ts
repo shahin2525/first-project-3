@@ -29,6 +29,14 @@ const studentUpdateFromDB = async (id: string, data: Partial<TStudent>) => {
   });
   return result;
 };
+const deleteStudentFromDB = async (id: string) => {
+  if (await Student.doesNotUserExists(id)) {
+    throw new Error('user does not exists');
+  }
+  const result = await Student.findByIdAndUpdate(id, { isDeleted: true });
+  return result;
+};
+
 // const studentUpdateFromDB = async (id: string, data: Partial<TStudent>) => {
 //   if (await Student.doesNotUserExists(id)) {
 //     throw new Error('user does not exists');
@@ -45,4 +53,5 @@ export const StudentServices = {
   getAllStudentsFromDB,
   getSingleStudentFromDB,
   studentUpdateFromDB,
+  deleteStudentFromDB,
 };

@@ -59,7 +59,11 @@ const StudentSchema = new Schema<TStudent, StudentModel>(
     localGuardian: { type: LocalGuardianSchema, required: true },
     profileImg: { type: String },
     isActive: { type: String, enum: ['active', 'blocked'], required: true },
-    idDeleted: { type: Boolean, default: false },
+    // isDeleted: { type: Boolean, default: false },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
@@ -73,8 +77,8 @@ virtual.get(function () {
   return this.name.firstName + ' ' + this.name.lastName;
 });
 // does user exists
-StudentSchema.statics.doesUserExists = async function (id: string) {
-  const existingUser = await Student.findById(id);
+StudentSchema.statics.doesUserExists = async function (_id: string) {
+  const existingUser = await Student.findById(_id);
   return existingUser;
 };
 // does not user Exists
@@ -90,6 +94,17 @@ StudentSchema.pre('save', async function (next) {
   const salt = bcrypt.genSaltSync(Number(config.bcrypt));
   user.password = await bcrypt.hash(user.password, salt);
   // user.password = await bcrypt.hash(user.password,bcrypt.genSaltSync(Number(config.bcrypt)))
+  next();
+});
+
+StudentSchema.pre('find', function () {
+  this.find({ isDeleted: { $ne: true } });
+});
+StudentSchema.pre('findOne', function () {
+  this.find({ isDeleted: { $ne: true } });
+});
+StudentSchema.pre('aggregate', async function (next) {
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
   next();
 });
 // to password empty

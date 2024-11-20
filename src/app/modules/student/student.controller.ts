@@ -67,8 +67,6 @@ const updateStudent: RequestHandler = async (req, res, next) => {
     const id = req.params.id;
     const data = req.body;
 
-    // Validate the data against the Zod schema
-
     // Update the student in the database
     const result = await StudentServices.studentUpdateFromDB(id, data);
 
@@ -81,9 +79,26 @@ const updateStudent: RequestHandler = async (req, res, next) => {
     next(error);
   }
 };
+const deleteStudent: RequestHandler = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+
+    // Update the student in the database
+    const result = await StudentServices.deleteStudentFromDB(id);
+
+    res.status(200).json({
+      success: true,
+      message: 'delete student successfully',
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 export const StudentController = {
   createStudent,
   getAllStudent,
   getSingleStudent,
   updateStudent,
+  deleteStudent,
 };

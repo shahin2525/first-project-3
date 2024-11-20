@@ -44,7 +44,7 @@ const StudentValidationSchema = z.object({
   localGuardian: LocalGuardianSchema,
   profileImg: z.string().optional(),
   isActive: z.enum(['active', 'blocked']),
-  idDeleted: z.boolean(),
+  isDeleted: z.boolean().optional().default(false),
 });
 // update validation schema
 // Define Zod schemas for individual types
@@ -89,7 +89,7 @@ const UpdateStudentValidationSchema = z.object({
   localGuardian: UpdateLocalGuardianSchema.optional(),
   profileImg: z.string().optional(),
   isActive: z.enum(['active', 'blocked']).optional(),
-  idDeleted: z.boolean().optional(),
+  isDeleted: z.boolean().optional(),
 });
 
 // Export the schemas for reuse
