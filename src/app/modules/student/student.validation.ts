@@ -44,15 +44,57 @@ const StudentValidationSchema = z.object({
   localGuardian: LocalGuardianSchema,
   profileImg: z.string().optional(),
   isActive: z.enum(['active', 'blocked']),
+  idDeleted: z.boolean(),
+});
+// update validation schema
+// Define Zod schemas for individual types
+const UpdateUserNameSchema = z.object({
+  firstName: z.string().optional(),
+  middleName: z.string().optional(),
+  lastName: z.string().optional(),
 });
 
-// Export the schemas and inferred TypeScript types
-export {
-  UserNameSchema,
-  GuardianSchema,
-  LocalGuardianSchema,
-  StudentValidationSchema,
-};
+const UpdateGuardianSchema = z.object({
+  fatherName: z.string().optional(),
+  fatherOccupation: z.string().optional(),
+  fatherContactNo: z.string().optional(),
+  motherName: z.string().optional(),
+  motherOccupation: z.string().optional(),
+  motherContactNo: z.string().optional(),
+});
 
-// Example usage:
-// const student = StudentSchema.parse(data); // Validate and parse data
+const UpdateLocalGuardianSchema = z.object({
+  name: z.string().optional(),
+  occupation: z.string().optional(),
+  contactNo: z.string().optional(),
+  address: z.string().optional(),
+});
+
+// Main UpdateStudent schema
+const UpdateStudentValidationSchema = z.object({
+  id: z.string().optional(),
+  password: z.string().optional(),
+  name: UpdateUserNameSchema.optional(),
+  gender: z.enum(['male', 'female', 'others']).optional(),
+  email: z.string().optional(),
+  dataOfBirth: z.string().optional(),
+  contactNo: z.string().optional(),
+  emergencyContactNo: z.string().optional(),
+  BloodGroup: z
+    .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
+    .optional(),
+  presentAddress: z.string().optional(),
+  permanentAddress: z.string().optional(),
+  guardian: UpdateGuardianSchema.optional(),
+  localGuardian: UpdateLocalGuardianSchema.optional(),
+  profileImg: z.string().optional(),
+  isActive: z.enum(['active', 'blocked']).optional(),
+  idDeleted: z.boolean().optional(),
+});
+
+// Export the schemas for reuse
+
+// Export the schemas and inferred TypeScript types
+export { StudentValidationSchema, UpdateStudentValidationSchema };
+
+// Export the schemas and inferred TypeScript types

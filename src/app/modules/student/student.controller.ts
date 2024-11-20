@@ -46,9 +46,44 @@ const getSingleStudent: RequestHandler = async (
     next(error);
   }
 };
+// const updateStudent: RequestHandler = async (req, res, next: NextFunction) => {
+//   try {
+//     const id = req.params.id;
 
+//     const data = req.body;
+//     const validatedData = UpdateStudentValidationSchema.parse(data);
+//     const result = await StudentServices.studentUpdateFromDB(id, validatedData);
+//     res.status(200).json({
+//       success: true,
+//       message: 'update student successfully',
+//       data: result,
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+const updateStudent: RequestHandler = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const data = req.body;
+
+    // Validate the data against the Zod schema
+
+    // Update the student in the database
+    const result = await StudentServices.studentUpdateFromDB(id, data);
+
+    res.status(200).json({
+      success: true,
+      message: 'Student updated successfully',
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 export const StudentController = {
   createStudent,
   getAllStudent,
   getSingleStudent,
+  updateStudent,
 };

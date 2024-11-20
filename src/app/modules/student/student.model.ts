@@ -59,22 +59,14 @@ const StudentSchema = new Schema<TStudent, StudentModel>(
     localGuardian: { type: LocalGuardianSchema, required: true },
     profileImg: { type: String },
     isActive: { type: String, enum: ['active', 'blocked'], required: true },
+    idDeleted: { type: Boolean, default: false },
   },
   {
     timestamps: true,
     toJSON: { virtuals: true },
   },
 );
-// {
-//   virtuals: {
-//     fullName: {
-//       get() {
-//         return `${this.firstName} ${this.lastName}`;
-//       },
-//       // virtual setter and options can be defined here as well.
-//     },
-//   },
-// },
+
 // virtual type
 const virtual = StudentSchema.virtual('fullName');
 virtual.get(function () {
