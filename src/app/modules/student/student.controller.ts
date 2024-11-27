@@ -1,22 +1,22 @@
 import { NextFunction, RequestHandler } from 'express';
 import { StudentServices } from './student.service';
 
-import { StudentValidationSchema } from './student.validation';
+// import { StudentValidationSchema } from './student.validation';
 
-const createStudent: RequestHandler = async (req, res, next: NextFunction) => {
-  try {
-    const data = req.body;
-    const validatedData = StudentValidationSchema.parse(data);
-    const result = await StudentServices.createStudentIntoDB(validatedData);
-    res.status(200).json({
-      success: true,
-      message: 'student create successfully',
-      data: result,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+// const createStudent: RequestHandler = async (req, res, next: NextFunction) => {
+//   try {
+//     const data = req.body;
+//     const validatedData = StudentValidationSchema.parse(data);
+//     const result = await StudentServices.createStudentIntoDB(validatedData);
+//     res.status(200).json({
+//       success: true,
+//       message: 'student create successfully',
+//       data: result,
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
 const getAllStudent: RequestHandler = async (req, res, next: NextFunction) => {
   try {
     const result = await StudentServices.getAllStudentsFromDB();
@@ -96,7 +96,7 @@ const deleteStudent: RequestHandler = async (req, res, next) => {
   }
 };
 export const StudentController = {
-  createStudent,
+  // createStudent,
   getAllStudent,
   getSingleStudent,
   updateStudent,
