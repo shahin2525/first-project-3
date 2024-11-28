@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import bcrypt from 'bcryptjs';
+
 import {
   StudentModel,
   TGuardian,
@@ -7,7 +7,6 @@ import {
   TStudent,
   TUserName,
 } from './student.interface';
-import config from '../../config';
 
 // UserName schema
 const UserNameSchema = new Schema<TUserName>({
@@ -92,18 +91,6 @@ StudentSchema.statics.doesNotUserExists = async function (id: string) {
   return !notExistingUser;
 };
 
-// to password bcrypt
-StudentSchema.pre('save', async function (next) {
-  // eslint-disable-next-line @typescript-eslint/no-this-alias
-  const user = this;
-  if (user.password) {
-    const salt = bcrypt.genSaltSync(Number(config.bcrypt));
-    user.password = await bcrypt.hash(user.password, salt);
-  }
-  // user.password = await bcrypt.hash(user.password,bcrypt.genSaltSync(Number(config.bcrypt)))
-  next();
-});
-
 StudentSchema.pre('find', function () {
   this.find({ isDeleted: { $ne: true } });
 });
@@ -112,12 +99,6 @@ StudentSchema.pre('findOne', function () {
 });
 StudentSchema.pre('aggregate', async function (next) {
   this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
-  next();
-});
-// to password empty
-StudentSchema.post('save', async function (doc, next) {
-  // console.log(doc);
-  doc.password = '';
   next();
 });
 

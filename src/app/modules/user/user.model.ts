@@ -1,6 +1,7 @@
 import { model, Schema } from 'mongoose';
 import { TUser } from './user.interface';
-
+import bcrypt from 'bcryptjs';
+import config from '../../config';
 const userSchema = new Schema<TUser>(
   {
     id: { type: String },
@@ -23,6 +24,24 @@ const userSchema = new Schema<TUser>(
     timestamps: true,
   },
 );
+// to password bcrypt
+userSchema.pre('save', async function (next) {
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  const user = this;
+  if (user.password) {
+    const salt = bcrypt.genSaltSync(Number(config.bcrypt));
+    user.password = await bcrypt.hash(user.password, salt);
+  }
+
+  next();
+});
+
+// to password empty
+userSchema.post('save', async function (doc, next) {
+  // console.log(doc);
+  doc.password = '';
+  next();
+});
 
 export const User = model<TUser>('User', userSchema);
 
