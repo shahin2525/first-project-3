@@ -96,8 +96,10 @@ StudentSchema.statics.doesNotUserExists = async function (id: string) {
 StudentSchema.pre('save', async function (next) {
   // eslint-disable-next-line @typescript-eslint/no-this-alias
   const user = this;
-  const salt = bcrypt.genSaltSync(Number(config.bcrypt));
-  user.password = await bcrypt.hash(user.password, salt);
+  if (user.password) {
+    const salt = bcrypt.genSaltSync(Number(config.bcrypt));
+    user.password = await bcrypt.hash(user.password, salt);
+  }
   // user.password = await bcrypt.hash(user.password,bcrypt.genSaltSync(Number(config.bcrypt)))
   next();
 });
