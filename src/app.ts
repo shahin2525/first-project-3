@@ -1,9 +1,8 @@
-import express from 'express';
 import cors from 'cors';
-import { StudentRoutes } from './app/modules/student/student.route';
-import { UserRoutes } from './app/modules/user/user.route';
+import express from 'express';
 import globalErrorHandlers from './app/middlewares/globalErrorHandlers';
 import notFoundRoutes from './app/middlewares/notFoundRoute';
+import router from './app/routes';
 // import { globalErrorHandlers } from './app/middlewares/globalErrorHandlers';
 const app = express();
 app.use(cors());
@@ -12,9 +11,9 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 // student routes
-app.use('/api/v1/students/', StudentRoutes);
+app.use('/api/v1/', router);
 // user routes
-app.use('/api/v1/users/', UserRoutes);
+// app.use('/api/v1/users/', UserRoutes);
 // // not found route
 // app.all('*', (req, res) => {
 //   res.send('not found route');
