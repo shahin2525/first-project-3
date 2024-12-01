@@ -33,12 +33,23 @@ const createAcademicSemesterSchema = new Schema<TAcademicSemester>(
     timestamps: true,
   },
 );
+createAcademicSemesterSchema.pre('save', async function (next) {
+  const isSemesterExists = await AcademicSemester.findOne({
+    name: this.name,
+    year: this.year,
+  });
+  if (isSemesterExists) {
+    throw new Error('semester is already exists');
+  }
+  next();
+});
 
 // Create and export the Mongoose model
 const AcademicSemester = model<TAcademicSemester>(
   'AcademicSemester',
   createAcademicSemesterSchema,
 );
+
 // 3. Create a Model.
-// const User = model<IUser>('User', userSchema);
+
 export default AcademicSemester;
