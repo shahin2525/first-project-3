@@ -26,25 +26,26 @@ const LocalGuardianSchema = z.object({
 });
 
 // Zod schema for TStudent
-const StudentValidationSchema = z.object({
-  id: z.string(),
-  password: z.string(),
-  name: UserNameSchema,
-  gender: z.enum(['male', 'female', 'others']),
-  email: z.string().email(),
-  dataOfBirth: z.string(),
-  contactNo: z.string(),
-  emergencyContactNo: z.string(),
-  BloodGroup: z
-    .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
-    .optional(),
-  presentAddress: z.string(),
-  permanentAddress: z.string(),
-  guardian: GuardianSchema,
-  localGuardian: LocalGuardianSchema,
-  profileImg: z.string().optional(),
-  isActive: z.enum(['active', 'blocked']),
-  isDeleted: z.boolean().optional().default(false),
+const createStudentValidationSchema = z.object({
+  body: z.object({
+    password: z.string(),
+    student: z.object({
+      name: UserNameSchema,
+      gender: z.enum(['male', 'female', 'others']),
+      email: z.string().email(),
+      dataOfBirth: z.string(),
+      contactNo: z.string(),
+      emergencyContactNo: z.string(),
+      BloodGroup: z
+        .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
+        .optional(),
+      presentAddress: z.string(),
+      permanentAddress: z.string(),
+      guardian: GuardianSchema,
+      localGuardian: LocalGuardianSchema,
+      profileImg: z.string().optional(),
+    }),
+  }),
 });
 // update validation schema
 // Define Zod schemas for individual types
@@ -92,9 +93,8 @@ const UpdateStudentValidationSchema = z.object({
   isDeleted: z.boolean().optional(),
 });
 
-// Export the schemas for reuse
-
 // Export the schemas and inferred TypeScript types
-export { StudentValidationSchema, UpdateStudentValidationSchema };
-
-// Export the schemas and inferred TypeScript types
+export const StudentValidations = {
+  createStudentValidationSchema,
+  UpdateStudentValidationSchema,
+};
