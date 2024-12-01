@@ -1,6 +1,7 @@
-import { NextFunction, RequestHandler } from 'express';
-import { StudentServices } from './student.service';
+import { RequestHandler } from 'express';
+import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
+import { StudentServices } from './student.service';
 
 // import { StudentValidationSchema } from './student.validation';
 
@@ -18,93 +19,55 @@ import sendResponse from '../../utils/sendResponse';
 //     next(error);
 //   }
 // };
-const getAllStudent: RequestHandler = async (req, res, next: NextFunction) => {
-  try {
-    const result = await StudentServices.getAllStudentsFromDB();
-    // res.status(200).json({
-    //   success: true,
-    //   message: 'get all students successfully',
-    //   data: result,
-    // });
-    sendResponse(res, {
-      statusCode: 500,
-      success: true,
-      message: 'get all students successfully',
-      data: result,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-const getSingleStudent: RequestHandler = async (
-  req,
-  res,
-  next: NextFunction,
-) => {
-  try {
-    const id = req.params.id;
-    const result = await StudentServices.getSingleStudentFromDB(id);
-    // res.status(200).json({
-    //   success: true,
-    //   message: 'get single student successfully',
-    //   data: result,
-    // });
-    sendResponse(res, {
-      statusCode: 500,
-      success: true,
-      message: 'get single student successfully',
-      data: result,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+const getAllStudent: RequestHandler = catchAsync(async (req, res) => {
+  const result = await StudentServices.getAllStudentsFromDB();
 
-const updateStudent: RequestHandler = async (req, res, next) => {
-  try {
-    const id = req.params.id;
-    const data = req.body;
+  sendResponse(res, {
+    statusCode: 500,
+    success: true,
+    message: 'get all students successfully',
+    data: result,
+  });
+});
+const getSingleStudent: RequestHandler = catchAsync(async (req, res) => {
+  const id = req.params.id;
+  const result = await StudentServices.getSingleStudentFromDB(id);
 
-    // Update the student in the database
-    const result = await StudentServices.studentUpdateFromDB(id, data);
+  sendResponse(res, {
+    statusCode: 500,
+    success: true,
+    message: 'get single student successfully',
+    data: result,
+  });
+});
 
-    // res.status(200).json({
-    //   success: true,
-    //   message: 'Student updated successfully',
-    //   data: result,
-    // });
-    sendResponse(res, {
-      statusCode: 500,
-      success: true,
-      message: 'Student updated successfully',
-      data: result,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-const deleteStudent: RequestHandler = async (req, res, next) => {
-  try {
-    const id = req.params.id;
+const updateStudent: RequestHandler = catchAsync(async (req, res) => {
+  const id = req.params.id;
+  const data = req.body;
 
-    // Update the student in the database
-    const result = await StudentServices.deleteStudentFromDB(id);
+  // Update the student in the database
+  const result = await StudentServices.studentUpdateFromDB(id, data);
 
-    // res.status(200).json({
-    //   success: true,
-    //   message: 'delete student successfully',
-    //   data: result,
-    // });
-    sendResponse(res, {
-      statusCode: 500,
-      success: true,
-      message: 'delete student successfully',
-      data: result,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+  sendResponse(res, {
+    statusCode: 500,
+    success: true,
+    message: 'Student updated successfully',
+    data: result,
+  });
+});
+const deleteStudent: RequestHandler = catchAsync(async (req, res) => {
+  const id = req.params.id;
+
+  // Update the student in the database
+  const result = await StudentServices.deleteStudentFromDB(id);
+
+  sendResponse(res, {
+    statusCode: 500,
+    success: true,
+    message: 'delete student successfully',
+    data: result,
+  });
+});
 export const StudentController = {
   // createStudent,
   getAllStudent,
