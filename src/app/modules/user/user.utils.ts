@@ -16,9 +16,24 @@ export const generateStudentId = async (payload: TAcademicSemester) => {
         createdAt: -1,
       })
       .lean();
-    return studentId?.id ? studentId.id.substring(6) : undefined;
+    return studentId?.id ? studentId.id : undefined;
   };
-  const currentId = (await findLastStudentId()) || (0).toString();
+
+  // if last student id exists
+
+  let currentId = (0).toString();
+  const lastStudentId = await findLastStudentId();
+  const lastStudentSemesterYear = lastStudentId?.substring(0, 4);
+  const lastStudentSemesterCode = lastStudentId?.substring(4, 6);
+  const currentStudentCode = payload.code;
+  const currentStudentYear = payload.year;
+  if (
+    lastStudentId &&
+    lastStudentSemesterYear === currentStudentYear &&
+    lastStudentSemesterCode === currentStudentCode
+  ) {
+    currentId = lastStudentId.substring(6);
+  }
   let incrementId = (Number(currentId) + 1).toString().padStart(4, '0');
 
   incrementId = `${payload.year}${payload.code}${incrementId}`;
