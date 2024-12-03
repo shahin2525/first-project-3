@@ -30,7 +30,7 @@ const getAllAcademicFaculty: RequestHandler = catchAsync(async (req, res) => {
 // get single academic faculty
 const getSingleAcademicFaculty: RequestHandler = catchAsync(
   async (req, res) => {
-    const id = req.params.userId;
+    const id = req.params.facultyId;
     const result =
       await AcademicFacultyServices.getSingleAcademicFacultyFromDB(id);
 
@@ -44,7 +44,7 @@ const getSingleAcademicFaculty: RequestHandler = catchAsync(
 );
 // update academic faculty
 const updateAcademicFaculty: RequestHandler = catchAsync(async (req, res) => {
-  const id = req.params.userId;
+  const id = req.params.facultyId;
   const updateData = req.body;
   const result = await AcademicFacultyServices.updateAcademicFacultyIntoDB(
     id,

@@ -13,9 +13,9 @@ router.post(
   ),
   AcademicFacultyControllers.createAcademicFaculty,
 );
-router.get('/:userId', AcademicFacultyControllers.getSingleAcademicFaculty);
+router.get('/:facultyId', AcademicFacultyControllers.getSingleAcademicFaculty);
 router.patch(
-  '/:userId',
+  '/:facultyId',
   validateRequest(
     AcademicFacultyValidations.updateAcademicFacultyValidationSchema,
   ),
