@@ -20,6 +20,9 @@ const updateAcademicFacultyIntoDB = async (
   id: string,
   payload: Partial<TAcademicFaculty>,
 ) => {
+  if (await AcademicFaculty.doesFacultyExists(id)) {
+    throw new Error('faculty id does not exists');
+  }
   const result = await AcademicFaculty.findByIdAndUpdate(id, payload, {
     new: true,
     runValidators: true,
