@@ -1,3 +1,5 @@
+import { StatusCodes } from 'http-status-codes';
+import AppError from '../../error/appError';
 import { TAcademicFaculty } from './academicFaculty.interface';
 import { AcademicFaculty } from './academicFaculty.model';
 
@@ -21,7 +23,7 @@ const updateAcademicFacultyIntoDB = async (
   payload: Partial<TAcademicFaculty>,
 ) => {
   if (await AcademicFaculty.doesFacultyExists(id)) {
-    throw new Error('faculty id does not exists');
+    throw new AppError(StatusCodes.NOT_FOUND, 'faculty id does not exists');
   }
   const result = await AcademicFaculty.findByIdAndUpdate(id, payload, {
     new: true,

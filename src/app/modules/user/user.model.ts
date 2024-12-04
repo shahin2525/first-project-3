@@ -2,6 +2,8 @@ import { model, Schema } from 'mongoose';
 import { TUser } from './user.interface';
 import bcrypt from 'bcryptjs';
 import config from '../../config';
+import AppError from '../../error/appError';
+import { StatusCodes } from 'http-status-codes';
 const userSchema = new Schema<TUser>(
   {
     id: { type: String, unique: true },
@@ -40,6 +42,18 @@ userSchema.pre('save', async function (next) {
 userSchema.post('save', async function (doc, next) {
   // console.log(doc);
   doc.password = '';
+  next();
+});
+
+// if user exists
+
+userSchema.pre('save', async function (next) {
+  const doesUserExists = await User.findOne({
+    id: this.id,
+  });
+  if (doesUserExists) {
+    throw new AppError(StatusCodes.BAD_REQUEST, 'user is already exists');
+  }
   next();
 });
 

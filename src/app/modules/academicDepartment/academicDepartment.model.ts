@@ -6,6 +6,8 @@ import {
   DepartmentModel,
   TAcademicDepartment,
 } from './academicDepartment.interface';
+import AppError from '../../error/appError';
+import { StatusCodes } from 'http-status-codes';
 
 const AcademicDepartmentSchema = new Schema<
   TAcademicDepartment,
@@ -24,7 +26,7 @@ AcademicDepartmentSchema.pre('save', async function (next) {
     name: this.name,
   });
   if (isDepartmentExists) {
-    throw new Error('department is already exists');
+    throw new AppError(StatusCodes.BAD_REQUEST, 'department is already exists');
   }
   next();
 });

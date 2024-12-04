@@ -1,3 +1,5 @@
+import { StatusCodes } from 'http-status-codes';
+import AppError from '../../error/appError';
 import { TStudent } from './student.interface';
 import Student from './student.model';
 
@@ -9,19 +11,34 @@ import Student from './student.model';
 //   return result;
 // };
 const getAllStudentsFromDB = async () => {
-  const result = await Student.find();
+  const result = await Student.find()
+    .populate('admissionSemester')
+    .populate({
+      path: 'academicDepartment',
+      populate: {
+        path: 'academicFaculty',
+      },
+    });
   return result;
 };
+
 const getSingleStudentFromDB = async (id: string) => {
   if (await Student.doesNotUserExists(id)) {
-    throw new Error('user does not exists');
+    throw new AppError(StatusCodes.NOT_FOUND, 'user does not exists');
   }
-  const result = await Student.findById(id);
+  const result = await Student.findById(id)
+    .populate('admissionSemester')
+    .populate({
+      path: 'academicDepartment',
+      populate: {
+        path: 'academicFaculty',
+      },
+    });
   return result;
 };
 const studentUpdateFromDB = async (id: string, data: Partial<TStudent>) => {
   if (await Student.doesNotUserExists(id)) {
-    throw new Error('user does not exists');
+    throw new AppError(StatusCodes.NOT_FOUND, 'user does not exists');
   }
   const result = await Student.findByIdAndUpdate(id, data, {
     new: true,
@@ -31,7 +48,7 @@ const studentUpdateFromDB = async (id: string, data: Partial<TStudent>) => {
 };
 const deleteStudentFromDB = async (id: string) => {
   if (await Student.doesNotUserExists(id)) {
-    throw new Error('user does not exists');
+    throw new AppError(StatusCodes.NOT_FOUND, 'user does not exists');
   }
   const result = await Student.findByIdAndUpdate(id, { isDeleted: true });
   return result;

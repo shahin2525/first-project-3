@@ -39,11 +39,12 @@ export type TStudent = {
   profileImg?: string;
 
   admissionSemester: Types.ObjectId;
+  academicDepartment: Types.ObjectId;
   isDeleted: boolean;
 };
 export interface StudentModel extends Model<TStudent> {
   // eslint-disable-next-line no-unused-vars
-  doesUserExists(_id: string): Promise<boolean | null>;
+  doesUserExists(id: string): Promise<boolean | null>;
 }
 export interface StudentModel extends Model<TStudent> {
   // eslint-disable-next-line no-unused-vars

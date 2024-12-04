@@ -1,3 +1,5 @@
+import { StatusCodes } from 'http-status-codes';
+import AppError from '../../error/appError';
 import { TAcademicDepartment } from './academicDepartment.interface';
 import { AcademicDepartment } from './academicDepartment.model';
 
@@ -8,12 +10,13 @@ const createAcademicDepartmentIntoDB = async (payload: TAcademicDepartment) => {
 };
 // get all academic department
 const getAllAcademicDepartmentFromDB = async () => {
-  const result = await AcademicDepartment.find();
+  const result = await AcademicDepartment.find().populate('academicFaculty');
   return result;
 };
 // get all academic department
 const getSingleAcademicDepartmentFromDB = async (id: string) => {
-  const result = await AcademicDepartment.findById(id);
+  const result =
+    await AcademicDepartment.findById(id).populate('academicFaculty');
   return result;
 };
 const updateAcademicDepartmentIntoDB = async (
@@ -21,7 +24,7 @@ const updateAcademicDepartmentIntoDB = async (
   payload: Partial<TAcademicDepartment>,
 ) => {
   if (await AcademicDepartment.doesDepartmentExists(id)) {
-    throw new Error('department id does not exists');
+    throw new AppError(StatusCodes.NOT_FOUND, 'department id does not exists');
   }
   const result = await AcademicDepartment.findByIdAndUpdate(id, payload, {
     new: true,
