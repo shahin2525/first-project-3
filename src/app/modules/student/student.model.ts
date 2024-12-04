@@ -94,8 +94,8 @@ virtual.get(function () {
   return this.name.firstName + ' ' + this.name.lastName;
 });
 // does user exists
-StudentSchema.statics.doesUserExists = async function (_id: string) {
-  const existingUser = await Student.findById(_id);
+StudentSchema.statics.doesUserExists = async function (id: string) {
+  const existingUser = await Student.findById(id);
   return existingUser;
 };
 // does not user Exists

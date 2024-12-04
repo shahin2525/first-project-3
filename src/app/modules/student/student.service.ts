@@ -2,6 +2,8 @@ import { StatusCodes } from 'http-status-codes';
 import AppError from '../../error/appError';
 import { TStudent } from './student.interface';
 import Student from './student.model';
+import mongoose from 'mongoose';
+import { User } from '../user/user.model';
 
 // const createStudentIntoDB = async (student: TStudent) => {
 //   if (await Student.doesUserExists(student.id)) {
@@ -47,11 +49,42 @@ const studentUpdateFromDB = async (id: string, data: Partial<TStudent>) => {
   return result;
 };
 const deleteStudentFromDB = async (id: string) => {
-  if (await Student.doesNotUserExists(id)) {
-    throw new AppError(StatusCodes.NOT_FOUND, 'user does not exists');
+  // create transaction
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+    // delete user
+    const deleteUser = await User.findOneAndUpdate(
+      { id },
+      { isDeleted: true },
+      { new: true, session },
+    );
+    if (!deleteUser) {
+      throw new AppError(StatusCodes.BAD_REQUEST, 'failed to delete user');
+    }
+    // user is does not exists
+    if (await Student.doesNotUserExists(id)) {
+      throw new AppError(StatusCodes.NOT_FOUND, 'user does not exists');
+    }
+    // delete student
+    const deleteStudent = await Student.findOneAndUpdate(
+      { id },
+      { isDeleted: true },
+      { new: true, session },
+    );
+    if (!deleteStudent) {
+      throw new AppError(StatusCodes.BAD_REQUEST, 'failed to delete student');
+    }
+    await session.commitTransaction();
+    await session.endSession();
+    return deleteStudent;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw new AppError(StatusCodes.BAD_REQUEST, error.message);
   }
-  const result = await Student.findByIdAndUpdate(id, { isDeleted: true });
-  return result;
 };
 
 // const studentUpdateFromDB = async (id: string, data: Partial<TStudent>) => {
