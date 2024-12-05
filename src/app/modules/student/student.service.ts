@@ -42,7 +42,27 @@ const studentUpdateFromDB = async (id: string, payload: Partial<TStudent>) => {
   if (await Student.doesNotUserExists(id)) {
     throw new AppError(StatusCodes.NOT_FOUND, 'user does not exists');
   }
-  const result = await Student.findOneAndUpdate({ id }, payload, {
+  const { name, guardian, localGuardian, ...remainData } = payload;
+  const modifiedData: Record<string, unknown> = { ...remainData };
+
+  if (name && Object.keys(name).length) {
+    for (const [key, value] of Object.entries(name)) {
+      modifiedData[`name.${key}`] = value;
+    }
+  }
+  if (localGuardian && Object.keys(localGuardian).length) {
+    for (const [key, value] of Object.entries(localGuardian)) {
+      modifiedData[`localGuardian.${key}`] = value;
+    }
+  }
+
+  if (guardian && Object.keys(guardian).length) {
+    for (const [key, value] of Object.entries(guardian)) {
+      modifiedData[`guardian.${key}`] = value;
+    }
+  }
+
+  const result = await Student.findOneAndUpdate({ id }, modifiedData, {
     new: true,
     runValidators: true,
   });
