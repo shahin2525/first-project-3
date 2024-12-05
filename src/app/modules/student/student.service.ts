@@ -28,7 +28,7 @@ const getSingleStudentFromDB = async (id: string) => {
   if (await Student.doesNotUserExists(id)) {
     throw new AppError(StatusCodes.NOT_FOUND, 'user does not exists');
   }
-  const result = await Student.findById(id)
+  const result = await Student.findOne({ id })
     .populate('admissionSemester')
     .populate({
       path: 'academicDepartment',
@@ -38,22 +38,23 @@ const getSingleStudentFromDB = async (id: string) => {
     });
   return result;
 };
-const studentUpdateFromDB = async (id: string, data: Partial<TStudent>) => {
+const studentUpdateFromDB = async (id: string, payload: Partial<TStudent>) => {
   if (await Student.doesNotUserExists(id)) {
     throw new AppError(StatusCodes.NOT_FOUND, 'user does not exists');
   }
-  const result = await Student.findByIdAndUpdate(id, data, {
+  const result = await Student.findOneAndUpdate({ id }, payload, {
     new: true,
     runValidators: true,
   });
   return result;
 };
 const deleteStudentFromDB = async (id: string) => {
-  // create transaction
-  const session = await mongoose.startSession();
   if (await User.doesNotUserExists(id)) {
     throw new AppError(StatusCodes.NOT_FOUND, 'user id does not found');
   }
+  // create transaction
+  const session = await mongoose.startSession();
+
   try {
     session.startTransaction();
     // delete user

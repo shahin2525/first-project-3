@@ -75,24 +75,29 @@ const UpdateLocalGuardianSchema = z.object({
 
 // Main UpdateStudent schema
 const UpdateStudentValidationSchema = z.object({
-  id: z.string().optional(),
-  password: z.string().optional(),
-  name: UpdateUserNameSchema.optional(),
-  gender: z.enum(['male', 'female', 'others']).optional(),
-  email: z.string().optional(),
-  dataOfBirth: z.string().optional(),
-  contactNo: z.string().optional(),
-  emergencyContactNo: z.string().optional(),
-  BloodGroup: z
-    .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
-    .optional(),
-  presentAddress: z.string().optional(),
-  permanentAddress: z.string().optional(),
-  guardian: UpdateGuardianSchema.optional(),
-  localGuardian: UpdateLocalGuardianSchema.optional(),
-  profileImg: z.string().optional(),
-  isActive: z.enum(['active', 'blocked']).optional(),
-  isDeleted: z.boolean().optional(),
+  body: z.object({
+    // id: z.string().optional(),
+    // password: z.string().optional(),
+
+    student: z.object({
+      name: UpdateUserNameSchema.optional(),
+      gender: z.enum(['male', 'female', 'others']).optional(),
+      email: z.string().optional(),
+      dataOfBirth: z.string().optional(),
+      contactNo: z.string().optional(),
+      emergencyContactNo: z.string().optional(),
+      BloodGroup: z
+        .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
+        .optional(),
+      presentAddress: z.string().optional(),
+      permanentAddress: z.string().optional(),
+      guardian: UpdateGuardianSchema.optional(),
+      localGuardian: UpdateLocalGuardianSchema.optional(),
+      profileImg: z.string().optional(),
+      isActive: z.enum(['active', 'blocked']).optional(),
+      isDeleted: z.boolean().optional(),
+    }),
+  }),
 });
 
 // Export the schemas and inferred TypeScript types

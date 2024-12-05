@@ -43,10 +43,10 @@ const getSingleStudent: RequestHandler = catchAsync(async (req, res) => {
 
 const updateStudent: RequestHandler = catchAsync(async (req, res) => {
   const id = req.params.id;
-  const data = req.body;
+  const { student } = req.body;
 
   // Update the student in the database
-  const result = await StudentServices.studentUpdateFromDB(id, data);
+  const result = await StudentServices.studentUpdateFromDB(id, student);
 
   sendResponse(res, {
     statusCode: 500,
