@@ -1,10 +1,10 @@
 import { model, Schema } from 'mongoose';
-import { TUser } from './user.interface';
+import { TUser, UserModel } from './user.interface';
 import bcrypt from 'bcryptjs';
 import config from '../../config';
 import AppError from '../../error/appError';
 import { StatusCodes } from 'http-status-codes';
-const userSchema = new Schema<TUser>(
+const userSchema = new Schema<TUser, UserModel>(
   {
     id: { type: String, unique: true },
     password: { type: String },
@@ -57,8 +57,9 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-export const User = model<TUser>('User', userSchema);
-
-export const UserMongooseSchema = {
-  userSchema,
+userSchema.statics.doesNotUserExists = async function (id: string) {
+  const notExistingUser = await User.findOne({ id });
+  return !notExistingUser;
 };
+
+export const User = model<TUser, UserModel>('User', userSchema);

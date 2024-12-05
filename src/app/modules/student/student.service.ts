@@ -51,7 +51,9 @@ const studentUpdateFromDB = async (id: string, data: Partial<TStudent>) => {
 const deleteStudentFromDB = async (id: string) => {
   // create transaction
   const session = await mongoose.startSession();
-
+  if (await User.doesNotUserExists(id)) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'user id does not found');
+  }
   try {
     session.startTransaction();
     // delete user
@@ -65,7 +67,7 @@ const deleteStudentFromDB = async (id: string) => {
     }
     // user is does not exists
     if (await Student.doesNotUserExists(id)) {
-      throw new AppError(StatusCodes.NOT_FOUND, 'user does not exists');
+      throw new AppError(StatusCodes.NOT_FOUND, 'student does not exists');
     }
     // delete student
     const deleteStudent = await Student.findOneAndUpdate(

@@ -95,12 +95,12 @@ virtual.get(function () {
 });
 // does user exists
 StudentSchema.statics.doesUserExists = async function (id: string) {
-  const existingUser = await Student.findById(id);
+  const existingUser = await Student.findOne({ id });
   return existingUser;
 };
 // does not user Exists
 StudentSchema.statics.doesNotUserExists = async function (id: string) {
-  const notExistingUser = await Student.findById(id);
+  const notExistingUser = await Student.findOne({ id });
   return !notExistingUser;
 };
 
