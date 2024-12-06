@@ -1,30 +1,50 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { ErrorRequestHandler } from 'express';
-import { ZodError } from 'zod';
+import { ZodError, ZodIssue } from 'zod';
+import config from '../config';
 const globalErrorHandlers: ErrorRequestHandler = (error, req, res, next) => {
   let statusCode = error.statusCode || 500;
   let message = error.message || 'something went wrong';
   type TErrorResponse = { path: string | number; message: string }[];
 
-  let errorResponse: TErrorResponse = [
+  let errorSources: TErrorResponse = [
     {
       path: '',
       message: 'something went wrong',
     },
   ];
 
+  const handleZodError = (error: ZodError) => {
+    const statusCode = 400;
+    const message = 'validation error';
+    const errorSources = error.issues.map((issue: ZodIssue) => {
+      return {
+        path: issue?.path[issue?.path?.length - 1],
+        message: issue.message,
+      };
+    });
+    return {
+      statusCode,
+      message,
+      errorSources,
+    };
+  };
+
   if (error instanceof ZodError) {
-    statusCode = 400;
-    message = 'ami zoz error';
+    const simplifiedError = handleZodError(error);
+    statusCode = simplifiedError.statusCode;
+    message = simplifiedError.message;
+    errorSources = simplifiedError.errorSources;
   }
 
   res.status(statusCode).json({
     success: false,
     message,
-    errorResponse,
-    amiError: error,
+    errorSources,
+    // amiError: error,
+    stack: config.node_env === 'development' ? error?.stack : null,
   });
 };
 export default globalErrorHandlers;
