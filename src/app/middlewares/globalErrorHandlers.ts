@@ -4,10 +4,10 @@
 import { ErrorRequestHandler } from 'express';
 import { ZodError, ZodIssue } from 'zod';
 import config from '../config';
+import { TErrorResponse } from '../interface/error';
 const globalErrorHandlers: ErrorRequestHandler = (error, req, res, next) => {
   let statusCode = error.statusCode || 500;
   let message = error.message || 'something went wrong';
-  type TErrorResponse = { path: string | number; message: string }[];
 
   let errorSources: TErrorResponse = [
     {
