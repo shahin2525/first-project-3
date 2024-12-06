@@ -8,9 +8,9 @@ import { AcademicDepartmentControllers } from './academicDepartment.controller';
 const router = Router();
 router.post(
   '/create-academic-department',
-  validateRequest(
-    AcademicDepartmentValidations.createAcademicDepartmentValidationSchema,
-  ),
+  // validateRequest(
+  //   AcademicDepartmentValidations.createAcademicDepartmentValidationSchema,
+  // ),
   AcademicDepartmentControllers.createAcademicDepartment,
 );
 router.get(
