@@ -5,27 +5,41 @@ import Student from './student.model';
 import mongoose from 'mongoose';
 import { User } from '../user/user.model';
 
-// const createStudentIntoDB = async (student: TStudent) => {
-//   if (await Student.doesUserExists(student.id)) {
-//     throw new Error('user already exists');
-//   }
-//   const result = await Student.create(student);
-//   return result;
-// };
 const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
-  console.log(query.searchTerm);
-
+  // students searchable fields
+  const studentsSearchableFields = [
+    'email',
+    'name.firstName',
+    'presentAddress',
+  ];
   let searchTerm = '';
   if (query?.searchTerm) {
     searchTerm = query?.searchTerm as string;
   }
 
-  console.log(searchTerm); //firstName
-  const result = await Student.find({
-    $or: ['email', 'name.firstName', 'presentAddress'].map((field) => ({
+  // search query
+  const searchQuery = Student.find({
+    $or: studentsSearchableFields.map((field) => ({
       [field]: { $regex: searchTerm, $options: 'i' },
     })),
-  })
+  });
+
+  // filtering
+
+  // copy query for filtering
+
+  const queryObj = { ...query };
+
+  // remove partial match fields from query
+
+  const excludes = ['searchTerm', 'sort', 'limit'];
+
+  excludes.forEach((el) => delete queryObj[el]);
+
+  console.log(query, queryObj);
+  // filter query
+  const filterQuery = searchQuery
+    .find(queryObj)
     .populate('admissionSemester')
     .populate({
       path: 'academicDepartment',
@@ -33,8 +47,26 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
         path: 'academicFaculty',
       },
     });
-  console.log(result);
-  return result;
+
+  // sort
+  let sort = 'createdAt';
+  if (query?.sort) {
+    sort = query?.sort as string;
+  }
+
+  // sort query
+
+  const sortQuery = filterQuery.sort(sort);
+
+  // check limit
+  let limit = 1;
+  if (query?.limit) {
+    limit = query?.limit as number;
+  }
+  // limit query
+  const limitQuery = await sortQuery.limit(limit);
+
+  return limitQuery;
 };
 
 const getSingleStudentFromDB = async (id: string) => {
