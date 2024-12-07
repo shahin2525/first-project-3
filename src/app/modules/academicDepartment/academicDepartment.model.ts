@@ -21,15 +21,15 @@ const AcademicDepartmentSchema = new Schema<
   },
 });
 // if department exists
-// AcademicDepartmentSchema.pre('save', async function (next) {
-//   const isDepartmentExists = await AcademicDepartment.findOne({
-//     name: this.name,
-//   });
-//   if (isDepartmentExists) {
-//     throw new AppError(StatusCodes.BAD_REQUEST, 'department is already exists');
-//   }
-//   next();
-// });
+AcademicDepartmentSchema.pre('save', async function (next) {
+  const isDepartmentExists = await AcademicDepartment.findOne({
+    name: this.name,
+  });
+  if (isDepartmentExists) {
+    throw new AppError(StatusCodes.BAD_REQUEST, 'department is already exists');
+  }
+  next();
+});
 
 // if does not department exists
 

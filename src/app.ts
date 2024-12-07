@@ -1,5 +1,5 @@
 import cors from 'cors';
-import express from 'express';
+import express, { Request, Response } from 'express';
 import globalErrorHandlers from './app/middlewares/globalErrorHandlers';
 import notFoundRoutes from './app/middlewares/notFoundRoute';
 import router from './app/routes';
@@ -7,9 +7,10 @@ import router from './app/routes';
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.get('/', (req, res) => {
+const test = async (req: Request, res: Response) => {
   res.send('Hello World!');
-});
+};
+app.get('/', test);
 // student routes
 app.use('/api/v1/', router);
 
