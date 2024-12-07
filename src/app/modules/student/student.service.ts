@@ -24,19 +24,18 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
     })),
   });
 
-  // filtering
-
   // copy query for filtering
 
   const queryObj = { ...query };
 
   // remove partial match fields from query
 
-  const excludes = ['searchTerm', 'sort', 'limit'];
+  const excludes = ['searchTerm', 'sort', 'limit', 'page', 'fields'];
 
   excludes.forEach((el) => delete queryObj[el]);
 
-  console.log(query, queryObj);
+  console.log('qure', query);
+  console.log('querObg', queryObj);
   // filter query
   const filterQuery = searchQuery
     .find(queryObj)
@@ -60,13 +59,33 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
 
   // check limit
   let limit = 1;
-  if (query?.limit) {
-    limit = query?.limit as number;
-  }
-  // limit query
-  const limitQuery = await sortQuery.limit(limit);
+  let page = 1;
+  let skip = 0;
 
-  return limitQuery;
+  if (query?.limit) {
+    limit = Number(query?.limit);
+  }
+
+  if (query?.page) {
+    page = Number(query?.page);
+    skip = (page - 1) * limit;
+  }
+  // paginated Query
+
+  const paginateQuery = sortQuery.skip(skip);
+
+  // limit query
+  const limitQuery = paginateQuery.limit(limit);
+
+  let fields = '-__v';
+
+  if (query?.fields) {
+    console.log('fields', fields);
+    fields = (query?.fields as string).split(',').join(' ');
+  }
+  console.log('fields', fields);
+  const fieldsQuery = await limitQuery.select(fields);
+  return fieldsQuery;
 };
 
 const getSingleStudentFromDB = async (id: string) => {

@@ -91,7 +91,7 @@ const StudentSchema = new Schema<TStudent, StudentModel>(
 // virtual type
 const virtual = StudentSchema.virtual('fullName');
 virtual.get(function () {
-  return this.name.firstName + ' ' + this.name.lastName;
+  return this?.name?.firstName + ' ' + this?.name?.lastName;
 });
 // does user exists
 StudentSchema.statics.doesUserExists = async function (id: string) {
