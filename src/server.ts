@@ -32,4 +32,3 @@ process.on('uncaughtException', () => {
   console.log('uncaught exception track');
   process.exit(1);
 });
-console.log(x);

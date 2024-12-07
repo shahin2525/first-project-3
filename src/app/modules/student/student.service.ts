@@ -12,8 +12,20 @@ import { User } from '../user/user.model';
 //   const result = await Student.create(student);
 //   return result;
 // };
-const getAllStudentsFromDB = async () => {
-  const result = await Student.find()
+const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
+  console.log(query.searchTerm);
+
+  let searchTerm = '';
+  if (query?.searchTerm) {
+    searchTerm = query?.searchTerm as string;
+  }
+
+  console.log(searchTerm); //firstName
+  const result = await Student.find({
+    $or: ['email', 'name.firstName', 'presentAddress'].map((field) => ({
+      [field]: { $regex: searchTerm, $options: 'i' },
+    })),
+  })
     .populate('admissionSemester')
     .populate({
       path: 'academicDepartment',
@@ -21,6 +33,7 @@ const getAllStudentsFromDB = async () => {
         path: 'academicFaculty',
       },
     });
+  console.log(result);
   return result;
 };
 

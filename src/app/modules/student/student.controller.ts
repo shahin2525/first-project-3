@@ -20,7 +20,7 @@ import { StudentServices } from './student.service';
 //   }
 // };
 const getAllStudent: RequestHandler = catchAsync(async (req, res) => {
-  const result = await StudentServices.getAllStudentsFromDB();
+  const result = await StudentServices.getAllStudentsFromDB(req.query);
 
   sendResponse(res, {
     statusCode: 500,
