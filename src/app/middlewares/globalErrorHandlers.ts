@@ -8,6 +8,7 @@ import { TErrorSources } from '../interface/error';
 import handleZodError from '../error/handleZodError';
 import handleMongooseValidationError from '../error/handleMongooseValidationError';
 import handleCastError from '../error/handleCastError';
+import handelDuplicateError from '../error/handleDuplicateError';
 const globalErrorHandlers: ErrorRequestHandler = (error, req, res, next) => {
   let statusCode = error.statusCode || 500;
   let message = error.message || 'something went wrong';
