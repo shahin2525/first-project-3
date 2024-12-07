@@ -14,11 +14,11 @@ router.post(
   AcademicDepartmentControllers.createAcademicDepartment,
 );
 router.get(
-  '/:facultyId',
+  '/:departmentId',
   AcademicDepartmentControllers.getSingleAcademicDepartment,
 );
 router.patch(
-  '/:facultyId',
+  '/:departmentId',
   validateRequest(
     AcademicDepartmentValidations.updateAcademicDepartmentValidationSchema,
   ),

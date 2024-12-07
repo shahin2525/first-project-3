@@ -21,26 +21,17 @@ const AcademicDepartmentSchema = new Schema<
   },
 });
 // if department exists
-AcademicDepartmentSchema.pre('save', async function (next) {
-  const isDepartmentExists = await AcademicDepartment.findOne({
-    name: this.name,
-  });
-  if (isDepartmentExists) {
-    throw new AppError(StatusCodes.BAD_REQUEST, 'department is already exists');
-  }
-  next();
-});
-
-// if does not department exists
-
-// AcademicDepartmentSchema.pre('findOneAndUpdate', async function (next) {
-//   const query = this.getQuery();
-//   const isDepartmentExists = await AcademicDepartment.findOne(query);
-//   if (!isDepartmentExists) {
-//     throw new Error('department id does not exists');
+// AcademicDepartmentSchema.pre('save', async function (next) {
+//   const isDepartmentExists = await AcademicDepartment.findOne({
+//     name: this.name,
+//   });
+//   if (isDepartmentExists) {
+//     throw new AppError(StatusCodes.BAD_REQUEST, 'department is already exists');
 //   }
 //   next();
 // });
+
+// if does not department exists
 
 AcademicDepartmentSchema.statics.doesDepartmentExists = async function (
   id: string,

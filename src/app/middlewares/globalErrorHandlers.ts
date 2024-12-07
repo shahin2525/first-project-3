@@ -7,6 +7,7 @@ import config from '../config';
 import { TErrorSources } from '../interface/error';
 import handleZodError from '../error/handleZodError';
 import handleMongooseValidationError from '../error/handleMongooseValidationError';
+import handleCastError from '../error/handleCastError';
 const globalErrorHandlers: ErrorRequestHandler = (error, req, res, next) => {
   let statusCode = error.statusCode || 500;
   let message = error.message || 'something went wrong';
@@ -28,13 +29,23 @@ const globalErrorHandlers: ErrorRequestHandler = (error, req, res, next) => {
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;
     errorSources = simplifiedError.errorSources;
+  } else if (error.name === 'CastError') {
+    const simplifiedError = handleCastError(error);
+    statusCode = simplifiedError.statusCode;
+    message = simplifiedError.message;
+    errorSources = simplifiedError.errorSources;
+  } else if (error.errorResponse.code === 11000) {
+    const simplifiedError = handelDuplicateError(error);
+    statusCode = simplifiedError.statusCode;
+    message = simplifiedError.message;
+    errorSources = simplifiedError.errorSources;
   }
 
   res.status(statusCode).json({
     success: false,
     message,
     errorSources,
-    // error,
+    error,
 
     stack: config.node_env === 'development' ? error?.stack : null,
   });

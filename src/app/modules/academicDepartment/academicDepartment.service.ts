@@ -15,6 +15,9 @@ const getAllAcademicDepartmentFromDB = async () => {
 };
 // get all academic department
 const getSingleAcademicDepartmentFromDB = async (id: string) => {
+  if (await AcademicDepartment.doesDepartmentExists(id)) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'department id does not exists');
+  }
   const result =
     await AcademicDepartment.findById(id).populate('academicFaculty');
   return result;
