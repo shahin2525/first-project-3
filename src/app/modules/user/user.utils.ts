@@ -1,3 +1,4 @@
+import { TAcademicDepartment } from '../academicDepartment/academicDepartment.interface';
 import { TAcademicSemester } from '../academicSemester/academicSemester.interface';
 import { User } from './user.model';
 
@@ -39,4 +40,12 @@ export const generateStudentId = async (payload: TAcademicSemester) => {
   incrementId = `${payload.year}${payload.code}${incrementId}`;
 
   return incrementId;
+};
+
+// generate user id
+export const generateFacultyId = async (
+  payload: TAcademicDepartment,
+): Promise<string> => {
+  console.log(payload);
+  return 'fdfd';
 };

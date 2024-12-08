@@ -58,7 +58,7 @@ userSchema.pre('save', async function (next) {
 });
 
 userSchema.statics.doesNotUserExists = async function (id: string) {
-  const notExistingUser = await User.findOne({ id });
+  const notExistingUser = await User.findById({ id });
   return !notExistingUser;
 };
 
