@@ -13,8 +13,8 @@ router.post(
 );
 router.post(
   '/create-faculty',
-  // validateRequest(FacultyValidations.createFacultyValidationSchema),
-  UserControllers.createStudent,
+  validateRequest(FacultyValidations.createFacultyValidationSchema),
+  UserControllers.createFaculty,
 );
 // router.get('/', StudentController.getAllStudent);
 // router.get('/:id', StudentController.getSingleStudent);

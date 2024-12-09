@@ -36,7 +36,17 @@ const updateFacultyFromDB = async (id: string, payload: Partial<TFaculty>) => {
     throw new AppError(StatusCodes.NOT_FOUND, 'faculty id does not found');
   }
 
-  const result = await Faculty.findByIdAndUpdate(id, payload, {
+  const { name, ...remainingData } = payload;
+
+  const modifiedData: Record<string, unknown> = { ...remainingData };
+
+  if (name && Object.keys(name).length) {
+    for (const [key, value] of Object.entries(name)) {
+      modifiedData[`name.${key}`] = value;
+    }
+  }
+
+  const result = await Faculty.findByIdAndUpdate(id, modifiedData, {
     new: true,
     runValidators: true,
   });

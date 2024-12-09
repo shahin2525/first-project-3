@@ -26,17 +26,17 @@ const globalErrorHandlers: ErrorRequestHandler = (error, req, res, next) => {
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;
     errorSources = simplifiedError.errorSources;
-  } else if (error.name === 'ValidationError') {
+  } else if (error?.name === 'ValidationError') {
     const simplifiedError = handleMongooseValidationError(error);
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;
     errorSources = simplifiedError.errorSources;
-  } else if (error.name === 'CastError') {
+  } else if (error?.name === 'CastError') {
     const simplifiedError = handleCastError(error);
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;
     errorSources = simplifiedError.errorSources; //error.errorResponse.code === 11000
-  } else if (error.errorResponse.code === 11000) {
+  } else if (error?.errorResponse?.code === 11000) {
     const simplifiedError = handelDuplicateError(error);
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;

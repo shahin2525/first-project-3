@@ -86,7 +86,7 @@ const creteFacultyIntoDB = async (password: string, payload: TFaculty) => {
   try {
     session.startTransaction();
 
-    userData.id = await generateFacultyId(academicDepartment);
+    userData.id = 'F-1012'; //await generateFacultyId(academicDepartment)
 
     const newUser = await User.create([userData], { session });
     if (!newUser.length) {
