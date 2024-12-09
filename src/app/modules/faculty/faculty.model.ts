@@ -126,5 +126,9 @@ facultySchema.statics.isUserExists = async function (id: string) {
   const existingUser = await Faculty.findOne({ id });
   return existingUser;
 };
+facultySchema.statics.doesNotUserExists = async function (id: string) {
+  const existingUser = await Faculty.findOne({ id });
+  return !existingUser;
+};
 
 export const Faculty = model<TFaculty, FacultyModel>('Faculty', facultySchema);

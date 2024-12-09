@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Model, Types } from 'mongoose';
 
 export type TGender = 'male' | 'female' | 'other';
@@ -36,8 +37,8 @@ export type TFaculty = {
 };
 
 export interface FacultyModel extends Model<TFaculty> {
-  doesUserExists(): Promise<TFaculty | null>;
+  doesUserExists(id: string): Promise<TFaculty | null>;
 }
 export interface FacultyModel extends Model<TFaculty> {
-  doesNotUserExists(): Promise<TFaculty | null>;
+  doesNotUserExists(id: string): Promise<TFaculty | null>;
 }
