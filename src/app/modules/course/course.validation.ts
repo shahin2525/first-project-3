@@ -7,7 +7,7 @@ const PreRequisiteCoursesSchema = z.object({
 });
 
 // Course Schema
-const CourseSchema = z.object({
+const createCourseValidationSchema = z.object({
   body: z.object({
     title: z.string(),
     prefix: z.string(),
@@ -17,4 +17,4 @@ const CourseSchema = z.object({
   }),
 });
 
-export { PreRequisiteCoursesSchema, CourseSchema };
+export const CourseValidations = { createCourseValidationSchema };
