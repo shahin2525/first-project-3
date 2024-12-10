@@ -29,6 +29,7 @@ const getAllStudent: RequestHandler = catchAsync(async (req, res) => {
     data: result,
   });
 });
+
 const getSingleStudent: RequestHandler = catchAsync(async (req, res) => {
   const id = req.params.id;
   const result = await StudentServices.getSingleStudentFromDB(id);

@@ -113,7 +113,7 @@ const getSingleStudentFromDB = async (id: string) => {
   if (await Student.doesNotUserExists(id)) {
     throw new AppError(StatusCodes.NOT_FOUND, 'user does not exists');
   }
-  const result = await Student.findOne({ id })
+  const result = await Student.findById(id)
     .populate('admissionSemester')
     .populate({
       path: 'academicDepartment',
@@ -147,36 +147,24 @@ const studentUpdateFromDB = async (id: string, payload: Partial<TStudent>) => {
     }
   }
 
-  const result = await Student.findOneAndUpdate({ id }, modifiedData, {
+  const result = await Student.findByIdAndUpdate(id, modifiedData, {
     new: true,
     runValidators: true,
   });
   return result;
 };
 const deleteStudentFromDB = async (id: string) => {
-  if (await User.doesNotUserExists(id)) {
-    throw new AppError(StatusCodes.NOT_FOUND, 'user id does not found');
+  // student is does not exists
+  if (await Student.doesNotUserExists(id)) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'student does not exists');
   }
   // create transaction
   const session = await mongoose.startSession();
 
   try {
     session.startTransaction();
-    // delete user
-    const deleteUser = await User.findOneAndUpdate(
-      { id },
-      { isDeleted: true },
-      { new: true, session },
-    );
-    if (!deleteUser) {
-      throw new AppError(StatusCodes.BAD_REQUEST, 'failed to delete user');
-    }
-    // user is does not exists
-    if (await Student.doesNotUserExists(id)) {
-      throw new AppError(StatusCodes.NOT_FOUND, 'student does not exists');
-    }
     // delete student
-    const deleteStudent = await Student.findOneAndUpdate(
+    const deleteStudent = await Student.findByIdAndUpdate(
       { id },
       { isDeleted: true },
       { new: true, session },
@@ -184,9 +172,22 @@ const deleteStudentFromDB = async (id: string) => {
     if (!deleteStudent) {
       throw new AppError(StatusCodes.BAD_REQUEST, 'failed to delete student');
     }
+
+    const userId = deleteStudent.user;
+
+    // delete user
+    const deleteUser = await User.findByIdAndUpdate(
+      userId,
+      { isDeleted: true },
+      { new: true, session },
+    );
+    if (!deleteUser) {
+      throw new AppError(StatusCodes.BAD_REQUEST, 'failed to delete user');
+    }
+
     await session.commitTransaction();
     await session.endSession();
-    return deleteStudent;
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     await session.abortTransaction();
