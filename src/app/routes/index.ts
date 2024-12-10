@@ -5,6 +5,7 @@ import { AcademicSemesterRoutes } from '../modules/academicSemester/academicSeme
 import { AcademicFacultyRoutes } from '../modules/academicFaculty/academicFaculty.route';
 import { AcademicDepartmentRoutes } from '../modules/academicDepartment/academicDepartment.routes';
 import { FacultyRoutes } from '../modules/faculty/faculty.routes';
+import { AdminRoutes } from '../modules/admin/admin.routes';
 
 const router = Router();
 const routesModule = [
@@ -31,6 +32,10 @@ const routesModule = [
   {
     path: '/faculties',
     route: FacultyRoutes,
+  },
+  {
+    path: '/admins',
+    route: AdminRoutes,
   },
 ];
 routesModule.forEach((route) => router.use(route.path, route.route));

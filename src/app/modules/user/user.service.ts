@@ -7,7 +7,11 @@ import { TStudent } from '../student/student.interface';
 import Student from '../student/student.model';
 import { TUser } from './user.interface';
 import { User } from './user.model';
-import { generateFacultyId, generateStudentId } from './user.utils';
+import {
+  generateAdminId,
+  generateFacultyId,
+  generateStudentId,
+} from './user.utils';
 import { AcademicDepartment } from '../academicDepartment/academicDepartment.model';
 import { TFaculty } from '../faculty/faculty.interface';
 import { Faculty } from '../faculty/faculty.model';
@@ -87,7 +91,7 @@ const creteFacultyIntoDB = async (password: string, payload: TFaculty) => {
   try {
     session.startTransaction();
 
-    userData.id = 'F-1012'; //await generateFacultyId(academicDepartment)
+    userData.id = await generateFacultyId(); //await generateFacultyId(academicDepartment)
 
     const newUser = await User.create([userData], { session });
     if (!newUser.length) {
@@ -123,7 +127,7 @@ const creteFacultyIntoDB = async (password: string, payload: TFaculty) => {
 };
 
 // create admin
-// create faculty
+
 const creteAdminIntoDB = async (password: string, payload: TFaculty) => {
   const userData: Partial<TUser> = {};
   userData.password = password || config.default_password;
@@ -134,7 +138,7 @@ const creteAdminIntoDB = async (password: string, payload: TFaculty) => {
   try {
     session.startTransaction();
 
-    userData.id = 'A-1001'; //await generateFacultyId(academicDepartment)
+    userData.id = await generateAdminId();
 
     const newUser = await User.create([userData], { session });
     if (!newUser.length) {
@@ -154,7 +158,7 @@ const creteAdminIntoDB = async (password: string, payload: TFaculty) => {
     const newAdmin = await Admin.create([payload], { session });
 
     if (!newAdmin.length) {
-      throw new AppError(StatusCodes.BAD_REQUEST, 'failed to crete faculty');
+      throw new AppError(StatusCodes.BAD_REQUEST, 'failed to create admin');
     }
 
     await session.commitTransaction();

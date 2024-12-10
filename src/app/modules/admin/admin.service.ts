@@ -1,11 +1,12 @@
 import { StatusCodes } from 'http-status-codes';
 import QueryBuilder from '../../builder/QueryBuilder';
 import AppError from '../../error/appError';
-import { AdminSearchableFields } from './admin.constant';
+
 import { Admin } from './admin.model';
 import { TAdmin } from './admin.interface';
 import { User } from '../user/user.model';
 import mongoose from 'mongoose';
+import { AdminSearchableFields } from './admin.const';
 
 // get all admin
 const getAllAdmin = async (query: Record<string, unknown>) => {
@@ -96,6 +97,20 @@ const deleteAdminFromDB = async (id: string) => {
       throw new AppError(StatusCodes.BAD_REQUEST, 'failed to delete admin');
     }
 
+    const userId = deleteAdmin.user;
+
+    const deleteUser = await User.findByIdAndUpdate(
+      userId,
+      { isDeleted: true },
+      { new: true, session },
+    );
+
+    if (!deleteUser) {
+      throw new AppError(
+        StatusCodes.BAD_REQUEST,
+        'failed to delete admin user',
+      );
+    }
     await session.commitTransaction();
     await session.endSession();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
