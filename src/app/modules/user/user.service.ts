@@ -11,6 +11,7 @@ import { generateFacultyId, generateStudentId } from './user.utils';
 import { AcademicDepartment } from '../academicDepartment/academicDepartment.model';
 import { TFaculty } from '../faculty/faculty.interface';
 import { Faculty } from '../faculty/faculty.model';
+import { Admin } from '../admin/admin.model';
 
 // create student
 const createStudentIntoDB = async (password: string, payload: TStudent) => {
@@ -120,7 +121,56 @@ const creteFacultyIntoDB = async (password: string, payload: TFaculty) => {
     throw new Error(error);
   }
 };
+
+// create admin
+// create faculty
+const creteAdminIntoDB = async (password: string, payload: TFaculty) => {
+  const userData: Partial<TUser> = {};
+  userData.password = password || config.default_password;
+  userData.role = 'admin';
+
+  // create transaction
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+
+    userData.id = 'A-1001'; //await generateFacultyId(academicDepartment)
+
+    const newUser = await User.create([userData], { session });
+    if (!newUser.length) {
+      throw new AppError(
+        StatusCodes.BAD_REQUEST,
+        'failed to create admin user',
+      );
+    }
+
+    // if (Object.keys(newUser).length) {
+
+    payload.id = newUser[0]?.id;
+    payload.user = newUser[0]?._id;
+
+    // create faculty
+
+    const newAdmin = await Admin.create([payload], { session });
+
+    if (!newAdmin.length) {
+      throw new AppError(StatusCodes.BAD_REQUEST, 'failed to crete faculty');
+    }
+
+    await session.commitTransaction();
+    await session.endSession();
+    return newAdmin;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw new Error(error);
+  }
+};
 export const UserServices = {
   createStudentIntoDB,
   creteFacultyIntoDB,
+
+  creteAdminIntoDB,
 };
