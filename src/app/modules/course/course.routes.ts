@@ -7,16 +7,17 @@ import { CourseValidations } from './course.validation';
 
 const router = Router();
 router.post(
-  '/create-academic-faculty',
+  '/create-course',
   validateRequest(CourseValidations.createCourseValidationSchema),
   CourseControllers.createCourse,
 );
-router.get('/:facultyId', CourseControllers.getSingleCourse);
+router.get('/:id', CourseControllers.getSingleCourse);
 router.patch(
-  '/:facultyId',
+  '/:id',
   validateRequest(CourseValidations.updateCourseValidationSchema),
   CourseControllers.updateCourse,
 );
+router.delete('/:id', CourseControllers.deleteCourse);
 router.get('/', CourseControllers.getAllCourse);
 
 export const CourseRoutes = router;

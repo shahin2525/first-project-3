@@ -1,4 +1,4 @@
-import { Query } from 'mongoose';
+import { FilterQuery, Query } from 'mongoose';
 
 class QueryBuilder<T> {
   public modelQuery: Query<T[], T>;
@@ -11,14 +11,23 @@ class QueryBuilder<T> {
   //   search
   search(searchAbleFields: string[]) {
     const searchTerm = this?.query?.searchTerm || '';
-    if (this?.query?.searchTerm) {
+    // if (this?.query?.searchTerm) {
+    //   this.modelQuery = this.modelQuery.find({
+    //     $or: searchAbleFields.map((field) => ({
+    //       [field]: { $regex: searchTerm, $options: 'i' },
+    //     })),
+    //   });
+    // }
+    if (searchTerm) {
       this.modelQuery = this.modelQuery.find({
-        $or: searchAbleFields.map((field) => ({
-          [field]: { $regex: searchTerm, $options: 'i' },
-        })),
+        $or: searchAbleFields.map(
+          (field) =>
+            ({
+              [field]: { $regex: searchTerm, $options: 'i' },
+            }) as FilterQuery<T>,
+        ),
       });
     }
-
     return this;
   }
 

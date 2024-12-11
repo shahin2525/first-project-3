@@ -10,6 +10,17 @@ const createCourseIntoDB = async (payload: TCourse) => {
 };
 // get all academic faculty
 const getAllCourseFromDB = async (query: Record<string, unknown>) => {
+  // const courseQuery = new QueryBuilder(
+  //   Course.find().populate('preRequisiteCourses.course'),
+  //   query,
+  // )
+  //   .search(CourseSearchableFields)
+  //   .filterQuery()
+  //   .sorting()
+  //   .paginate()
+  //   .fieldsLimiting();
+  // const result = await courseQuery.modelQuery;
+  // return result;
   const courseQuery = new QueryBuilder(
     Course.find().populate('preRequisiteCourses.course'),
     query,
@@ -19,12 +30,15 @@ const getAllCourseFromDB = async (query: Record<string, unknown>) => {
     .sorting()
     .paginate()
     .fieldsLimiting();
+
   const result = await courseQuery.modelQuery;
   return result;
 };
 // get all academic faculty
 const getSingleCourseFromDB = async (id: string) => {
-  const result = await Course.findById(id);
+  const result = await Course.findById(id).populate(
+    'preRequisiteCourses.course',
+  );
   return result;
 };
 const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
@@ -38,9 +52,25 @@ const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
   return result;
 };
 
+// delete
+const deleteCourseIntoDB = async (id: string) => {
+  //   if (await Course.doesFacultyExists(id)) {
+  //     throw new AppError(StatusCodes.NOT_FOUND, 'faculty id does not exists');
+  //   }
+  const result = await Course.findByIdAndUpdate(
+    id,
+    { isDeleted: true },
+    {
+      new: true,
+      runValidators: true,
+    },
+  );
+  return result;
+};
 export const CourseServices = {
   createCourseIntoDB,
   getAllCourseFromDB,
   getSingleCourseFromDB,
   updateCourseIntoDB,
+  deleteCourseIntoDB,
 };

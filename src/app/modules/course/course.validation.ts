@@ -13,8 +13,22 @@ const createCourseValidationSchema = z.object({
     prefix: z.string(),
     code: z.number({ required_error: 'Code is required' }),
     credits: z.number({ required_error: 'Credits are required' }),
-    preRequisiteCourses: z.array(PreRequisiteCoursesSchema),
+    isDeleted: z.boolean().optional(),
+    preRequisiteCourses: z.array(PreRequisiteCoursesSchema).optional(),
   }),
 });
 
-export const CourseValidations = { createCourseValidationSchema };
+const updateCourseValidationSchema = z.object({
+  body: z.object({
+    title: z.string().optional(),
+    prefix: z.string().optional(),
+    code: z.number({ required_error: 'Code is required' }).optional(),
+    credits: z.number({ required_error: 'Credits are required' }).optional(),
+    preRequisiteCourses: z.array(PreRequisiteCoursesSchema).optional(),
+  }),
+});
+
+export const CourseValidations = {
+  createCourseValidationSchema,
+  updateCourseValidationSchema,
+};
