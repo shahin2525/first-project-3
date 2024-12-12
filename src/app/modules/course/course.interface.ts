@@ -1,4 +1,4 @@
-import { Types } from 'mongoose';
+import { Model, Types } from 'mongoose';
 
 export type TPreRequisiteCourses = {
   course: Types.ObjectId;
@@ -9,5 +9,11 @@ export type TCourse = {
   prefix: string;
   code: number;
   credits: number;
-  preRequisiteCourses: [];
+  isDeleted?: boolean;
+  preRequisiteCourses: [TPreRequisiteCourses];
 };
+
+export interface CourseModel extends Model<TCourse> {
+  // eslint-disable-next-line no-unused-vars
+  doesNotCourseExists(id: string): Promise<TCourse | null>;
+}

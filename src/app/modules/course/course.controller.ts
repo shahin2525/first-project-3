@@ -2,13 +2,14 @@ import { RequestHandler } from 'express';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import { CourseServices } from './course.service';
+import { StatusCodes } from 'http-status-codes';
 
 // create academic faculty
 const createCourse: RequestHandler = catchAsync(async (req, res) => {
   const result = await CourseServices.createCourseIntoDB(req.body);
 
   sendResponse(res, {
-    statusCode: 500,
+    statusCode: StatusCodes.OK,
     success: true,
     message: 'Course create successfully',
     data: result,
@@ -44,7 +45,7 @@ const updateCourse: RequestHandler = catchAsync(async (req, res) => {
   const result = await CourseServices.updateCourseIntoDB(id, updateData);
 
   sendResponse(res, {
-    statusCode: 500,
+    statusCode: StatusCodes.OK,
     success: true,
     message: 'update Course  successfully',
     data: result,
