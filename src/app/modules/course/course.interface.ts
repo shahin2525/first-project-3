@@ -13,6 +13,11 @@ export type TCourse = {
   preRequisiteCourses: [TPreRequisiteCourses];
 };
 
+export type TCourseFaculty = {
+  course: Types.ObjectId;
+  faculties: [Types.ObjectId];
+};
+
 export interface CourseModel extends Model<TCourse> {
   // eslint-disable-next-line no-unused-vars
   doesNotCourseExists(id: string): Promise<TCourse | null>;
