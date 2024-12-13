@@ -28,7 +28,7 @@ const CourseFacultySchema = new Schema<TCourseFaculty>({
   course: {
     type: Schema.Types.ObjectId,
     unique: true,
-    required: true,
+
     ref: 'Course',
   },
 
