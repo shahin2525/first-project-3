@@ -24,8 +24,9 @@ const OfferedCourseSchema = new Schema<TOfferedCourse>(
       ref: 'AcademicDepartment',
       required: true,
     },
-    course: { type: Schema.Types.ObjectId, ref: 'Course', required: true },
     faculty: { type: Schema.Types.ObjectId, ref: 'Faculty', required: true },
+    course: { type: Schema.Types.ObjectId, ref: 'Course', required: true },
+
     maxCapacity: { type: Number, required: true },
     section: { type: Number, required: true },
     days: [
@@ -43,7 +44,7 @@ const OfferedCourseSchema = new Schema<TOfferedCourse>(
   },
 );
 
-export const OfferedCourseModel = model<TOfferedCourse>(
+export const OfferedCourse = model<TOfferedCourse>(
   'OfferedCourse',
   OfferedCourseSchema,
 );
