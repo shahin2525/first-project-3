@@ -7,6 +7,7 @@ import { AcademicDepartment } from '../academicDepartment/academicDepartment.mod
 import { Course } from '../course/course.model';
 import { Faculty } from '../faculty/faculty.model';
 import { AcademicFaculty } from '../academicFaculty/academicFaculty.model';
+import hasTimeConflict from './offeredCourse.utils';
 
 // crete academic faculty
 const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
@@ -17,6 +18,9 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
     faculty,
     course,
     section,
+    days,
+    startTime,
+    endTime,
   } = payload;
   const isSemesterRegistrationExists =
     await SemesterRegistration.findById(semesterRegistration);
@@ -82,6 +86,54 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
       'offered course with same section already exists',
     );
   }
+
+  // if same sRegis and same faculty and same days
+  const newSchedule = {
+    days,
+    startTime,
+    endTime,
+  };
+  const assignSchedules = await OfferedCourse.find({
+    semesterRegistration,
+    faculty,
+    days: { $in: days },
+  }).select('days startTime endTime');
+  console.log(assignSchedules);
+  if (hasTimeConflict(assignSchedules, newSchedule)) {
+    throw new AppError(
+      StatusCodes.CONFLICT,
+      'This faculty is not available that time , please choose another day or time',
+    );
+  }
+  // assignSchedules.forEach((schedule) => {
+  //   const existsStartTime = new Date(`1970-01-01T${schedule.startTime}`);
+  //   const existsEndTime = new Date(`1970-01-01T${schedule.endTime}`);
+  //   const newStartTime = new Date(`1970-01-01T${newSchedule.startTime}`);
+  //   const newEndTime = new Date(`1970-01-01T${newSchedule.endTime}`);
+  //   // existsT 10.30 - 12.30
+  //   // newT  1.30 - 3.30
+  //   // 9.30 - 11.30
+
+  //   if (newStartTime < existsEndTime && newEndTime > existsStartTime) {
+  //     throw new AppError(
+  //       StatusCodes.CONFLICT,
+  //       'This faculty is not available that time , please choose another day or time',
+  //     );
+  //   }
+  // });
+
+  /*
+  [
+{
+    _id: new ObjectId('675fa0afc4872152359f1cfa'),    
+    days: [ 'Monday', 'Wednesday' ],
+    startTime: '08:30',
+    endTime: '11:30'
+  }
+  ]
+
+  */
+
   const result = await OfferedCourse.create({ ...payload, academicSemester });
   return result;
 };

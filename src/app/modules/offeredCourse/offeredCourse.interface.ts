@@ -20,3 +20,9 @@ export type TOfferedCourse = {
   startTime: string;
   endTime: string;
 };
+
+export type TAssignSchedule = {
+  days: Days[];
+  startTime: string;
+  endTime: string;
+};
