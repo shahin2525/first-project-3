@@ -98,7 +98,7 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
     faculty,
     days: { $in: days },
   }).select('days startTime endTime');
-  console.log(assignSchedules);
+
   if (hasTimeConflict(assignSchedules, newSchedule)) {
     throw new AppError(
       StatusCodes.CONFLICT,
@@ -121,11 +121,50 @@ const getSingleOfferedCourseFromDB = async (id: string) => {
 };
 const updateOfferedCourseIntoDB = async (
   id: string,
-  payload: Partial<TOfferedCourse>,
+  payload: Pick<
+    TOfferedCourse,
+    'faculty' | 'days' | 'startTime' | 'endTime' | 'maxCapacity'
+  >,
 ) => {
-  //   if (await OfferedCourse.doesFacultyExists(id)) {
-  //     throw new AppError(StatusCodes.NOT_FOUND, 'faculty id does not exists');
-  //   }
+  const { faculty, days, startTime, endTime } = payload;
+  // offered course do not found
+  const isOfferedCourseExists = await OfferedCourse.findById(id);
+
+  if (!isOfferedCourseExists) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'Offered course not found');
+  }
+  // faculty do not found
+  const isFacultyExits = await Faculty.findById(faculty);
+  if (!isFacultyExits) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'Offered course not found');
+  }
+
+  // if semester registration status !== "UPCOMING"
+  const semesterRegistration = isOfferedCourseExists?.semesterRegistration;
+
+  const semesterRegistrationStatus =
+    await SemesterRegistration.findById(semesterRegistration);
+  if (semesterRegistrationStatus?.status !== 'UPCOMING') {
+    throw new AppError(
+      StatusCodes.BAD_REQUEST,
+      'semester registration status is not upcoming',
+    );
+  }
+  // if new schedule and assign schedule conflict
+  const newSchedule = { days, startTime, endTime };
+  const assignSchedules = await OfferedCourse.find({
+    semesterRegistration,
+
+    faculty,
+    days: { $in: days },
+  });
+
+  if (hasTimeConflict(assignSchedules, newSchedule)) {
+    throw new AppError(
+      StatusCodes.CONFLICT,
+      'this faculty is not available for this time please choose another day or time',
+    );
+  }
   const result = await OfferedCourse.findByIdAndUpdate(id, payload, {
     new: true,
     runValidators: true,
