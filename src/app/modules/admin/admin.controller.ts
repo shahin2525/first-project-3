@@ -3,12 +3,13 @@ import catchAsync from '../../utils/catchAsync';
 
 import sendResponse from '../../utils/sendResponse';
 import { AdminServices } from './admin.service';
+import { StatusCodes } from 'http-status-codes';
 
 const getAllAdmin: RequestHandler = catchAsync(async (req, res) => {
   const result = await AdminServices.getAllAdmin(req.query);
 
   sendResponse(res, {
-    statusCode: 500,
+    statusCode: StatusCodes.OK,
     success: true,
     message: 'get all admin successfully',
     data: result,
@@ -19,7 +20,7 @@ const getSingleAdmin: RequestHandler = catchAsync(async (req, res) => {
   const result = await AdminServices.getSingleAdmin(id);
 
   sendResponse(res, {
-    statusCode: 500,
+    statusCode: StatusCodes.OK,
     success: true,
     message: 'get single admin successfully',
     data: result,
@@ -34,7 +35,7 @@ const updateAdmin: RequestHandler = catchAsync(async (req, res) => {
   const result = await AdminServices.updateAdminFromDB(id, admin);
 
   sendResponse(res, {
-    statusCode: 500,
+    statusCode: StatusCodes.OK,
     success: true,
     message: 'Admin updated successfully',
     data: result,
@@ -47,7 +48,7 @@ const deleteAdmin: RequestHandler = catchAsync(async (req, res) => {
   const result = await AdminServices.deleteAdminFromDB(id);
 
   sendResponse(res, {
-    statusCode: 500,
+    statusCode: StatusCodes.OK,
     success: true,
     message: 'delete admin successfully',
     data: result,

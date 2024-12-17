@@ -9,6 +9,7 @@ import { AdminRoutes } from '../modules/admin/admin.routes';
 import { CourseRoutes } from '../modules/course/course.routes';
 import { SemesterRegistrationRoutes } from '../modules/semesterRegistration/semesterRegistration.routes';
 import { OfferedCourseRoutes } from '../modules/offeredCourse/offeredCourse.routes';
+import { AuthRoutes } from '../modules/auth/auth.routes';
 
 const router = Router();
 const routesModule = [
@@ -51,6 +52,10 @@ const routesModule = [
   {
     path: '/offer-course',
     route: OfferedCourseRoutes,
+  },
+  {
+    path: '/auth',
+    route: AuthRoutes,
   },
 ];
 routesModule.forEach((route) => router.use(route.path, route.route));
