@@ -56,10 +56,19 @@ userSchema.pre('save', async function (next) {
   }
   next();
 });
+// is login in id match
 
-userSchema.statics.doesNotUserExists = async function (id: string) {
-  const notExistingUser = await User.findById({ id });
-  return !notExistingUser;
+userSchema.statics.userExists = async function (id: string) {
+  const existingUser = await User.findById({ id });
+  return existingUser;
 };
 
+// is password match
+userSchema.statics.isPasswordMatch = async function (
+  plainTextPassword: string,
+  hashedPassword: string,
+) {
+  const passwordIsMatch = bcrypt.compare(plainTextPassword, hashedPassword);
+  return passwordIsMatch;
+};
 export const User = model<TUser, UserModel>('User', userSchema);

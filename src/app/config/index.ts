@@ -8,4 +8,5 @@ export default {
   bcrypt: process.env.SALT,
   default_password: process.env.DEFAULT_PASSWORD,
   node_env: process.env.NODE_ENV,
+  access_secret_token: process.env.ACCESS_SECRET_TOKEN,
 };

@@ -10,5 +10,11 @@ export type TUser = {
 };
 export interface UserModel extends Model<TUser> {
   // eslint-disable-next-line no-unused-vars
-  doesNotUserExists(id: string): Promise<boolean | null>;
+  userExists(id: string): Promise<TUser>;
+  isPasswordMatch(
+    // eslint-disable-next-line no-unused-vars
+    plainTextPassword: string,
+    // eslint-disable-next-line no-unused-vars
+    hashedPassword: string,
+  ): Promise<boolean>;
 }
