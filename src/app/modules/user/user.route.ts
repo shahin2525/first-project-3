@@ -11,6 +11,7 @@ import { USER_ROLE } from './user.const';
 const router = Router();
 router.post(
   '/create-student',
+  auth(USER_ROLE.admin),
   validateRequest(StudentValidations.createStudentValidationSchema),
   UserControllers.createStudent,
 );

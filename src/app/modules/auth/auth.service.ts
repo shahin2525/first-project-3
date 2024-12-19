@@ -52,6 +52,8 @@ const loginUser = async (payload: TLoginUser) => {
   };
 };
 
+const changePassword = (data1, data2) => {};
 export const AuthServices = {
   loginUser,
+  changePassword,
 };

@@ -6,16 +6,14 @@ import { StatusCodes } from 'http-status-codes';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../config';
 import { TUserRole } from '../modules/user/user.interface';
+//
 const auth = (...requiredRoles: TUserRole[]) => {
-  console.log(requiredRoles);
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    // console.log(req.headers);
     const token = req.headers.authorization;
     // console.log(token);
     if (!token) {
       throw new AppError(StatusCodes.UNAUTHORIZED, 'you are unauthorize');
     }
-    next();
 
     // verify a token symmetric
     jwt.verify(
@@ -25,14 +23,15 @@ const auth = (...requiredRoles: TUserRole[]) => {
         if (err) {
           throw new AppError(StatusCodes.UNAUTHORIZED, 'you are not authorize');
         }
-        console.log(decoded);
 
-        const role = (decoded as JwtPayload).role;
+        const role = (decoded as JwtPayload)?.data?.role;
+        // console.log('mld dc role', role);
         if (requiredRoles && !requiredRoles.includes(role)) {
           throw new AppError(StatusCodes.UNAUTHORIZED, 'you are not authorize');
         }
 
         req.user = decoded as JwtPayload;
+        next();
       },
     );
   });

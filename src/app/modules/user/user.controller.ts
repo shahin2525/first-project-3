@@ -2,6 +2,7 @@ import { RequestHandler } from 'express';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import { UserServices } from './user.service';
+import { StatusCodes } from 'http-status-codes';
 
 // create student
 const createStudent: RequestHandler = catchAsync(async (req, res) => {
@@ -10,7 +11,7 @@ const createStudent: RequestHandler = catchAsync(async (req, res) => {
   const result = await UserServices.createStudentIntoDB(password, student);
 
   sendResponse(res, {
-    statusCode: 500,
+    statusCode: StatusCodes.OK,
     success: true,
     message: 'student create successfully',
     data: result,
@@ -25,7 +26,7 @@ const createFaculty: RequestHandler = catchAsync(async (req, res) => {
   const result = await UserServices.creteFacultyIntoDB(password, faculty);
 
   sendResponse(res, {
-    statusCode: 500,
+    statusCode: StatusCodes.OK,
     success: true,
     message: 'faculty create successfully',
     data: result,
@@ -39,7 +40,7 @@ const createAdmin: RequestHandler = catchAsync(async (req, res) => {
   const result = await UserServices.creteAdminIntoDB(password, admin);
 
   sendResponse(res, {
-    statusCode: 500,
+    statusCode: StatusCodes.OK,
     success: true,
     message: 'admin create successfully',
     data: result,
