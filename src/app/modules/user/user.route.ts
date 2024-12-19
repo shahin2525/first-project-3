@@ -5,6 +5,8 @@ import validateRequest from '../../middlewares/validateRequest';
 import { StudentValidations } from '../student/student.validation';
 import { FacultyValidations } from '../faculty/faculty.validation';
 import { AdminValidations } from '../admin/admin.validation';
+import auth from '../../middlewares/auth';
+import { USER_ROLE } from './user.const';
 
 const router = Router();
 router.post(
@@ -19,6 +21,7 @@ router.post(
 );
 router.post(
   '/create-admin',
+  auth(USER_ROLE.admin),
   validateRequest(AdminValidations.createAdminValidationSchema),
   UserControllers.createAdmin,
 );
