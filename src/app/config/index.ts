@@ -9,4 +9,7 @@ export default {
   default_password: process.env.DEFAULT_PASSWORD,
   node_env: process.env.NODE_ENV,
   access_secret_token: process.env.ACCESS_SECRET_TOKEN,
+  refresh_secret_token: process.env.REFRESH_SECRET_TOKEN,
+  access_expires_in: process.env.ACCESS_EXPIRES_IN,
+  refresh_expires_in: process.env.REFRESH_EXPIRES_IN,
 };

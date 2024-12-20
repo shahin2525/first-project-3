@@ -22,7 +22,7 @@ const auth = (...requiredRoles: TUserRole[]) => {
       token,
       config.access_secret_token as string,
     ) as JwtPayload;
-    console.log(decoded);
+    // console.log(decoded);
     const { data, iat } = decoded;
     const { role, userId } = data;
 
@@ -47,6 +47,17 @@ const auth = (...requiredRoles: TUserRole[]) => {
       throw new AppError(StatusCodes.FORBIDDEN, 'user is blocked');
     }
 
+    // password change timesAt === true
+
+    if (
+      user.changePasswordAt &&
+      User.isJWTIssuedBeforePasswordChanged(
+        user.changePasswordAt,
+        iat as number,
+      )
+    ) {
+      throw new AppError(StatusCodes.UNAUTHORIZED, 'you are not authorize 2');
+    }
     if (requiredRoles && !requiredRoles.includes(role)) {
       throw new AppError(StatusCodes.UNAUTHORIZED, 'you are not authorize 3');
     }
