@@ -7,7 +7,7 @@ import { StatusCodes } from 'http-status-codes';
 const userSchema = new Schema<TUser, UserModel>(
   {
     id: { type: String, unique: true },
-    password: { type: String },
+    password: { type: String, select: 0 },
     needsPasswordChange: { type: Boolean, default: true },
     role: {
       type: String,
@@ -21,6 +21,7 @@ const userSchema = new Schema<TUser, UserModel>(
       default: 'in-progress',
     },
     isDeleted: { type: Boolean, default: false },
+    changePasswordAt: { type: Date },
   },
   {
     timestamps: true,
@@ -59,8 +60,16 @@ userSchema.pre('save', async function (next) {
 // is login in id match
 
 userSchema.statics.userExists = async function (id: string) {
-  const existingUser = await User.findById({ id });
+  const existingUser = await User.findOne({ id }).select('+password');
   return existingUser;
+};
+
+// change password timesAt
+userSchema.statics.isJWTIssuedBeforePasswordChanged = function (
+  passwordChangedTimestamp: Date,
+  jwtIssuedTimestamp: number,
+) {
+  console.log(passwordChangedTimestamp, jwtIssuedTimestamp);
 };
 
 // is password match

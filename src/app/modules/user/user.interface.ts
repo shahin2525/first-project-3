@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Model } from 'mongoose';
 import { USER_ROLE } from './user.const';
 
@@ -8,16 +9,19 @@ export type TUser = {
   role: 'admin' | 'student' | 'faculty';
   status: 'in-progress' | 'blocked';
   isDeleted: boolean;
+  changePasswordAt?: Date;
 };
 export interface UserModel extends Model<TUser> {
-  // eslint-disable-next-line no-unused-vars
   userExists(id: string): Promise<TUser>;
   isPasswordMatch(
-    // eslint-disable-next-line no-unused-vars
     plainTextPassword: string,
-    // eslint-disable-next-line no-unused-vars
+
     hashedPassword: string,
   ): Promise<boolean>;
+  isJWTIssuedBeforePasswordChanged(
+    passwordChangedTimestamp: Date,
+    jwtIssuedTimestamp: number,
+  ): boolean;
 }
 
 export type TUserRole = keyof typeof USER_ROLE;

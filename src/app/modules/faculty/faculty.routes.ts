@@ -3,9 +3,10 @@ import { FacultyController } from './faculty.controller';
 import validateRequest from '../../middlewares/validateRequest';
 import { FacultyValidations } from './faculty.validation';
 import auth from '../../middlewares/auth';
+import { USER_ROLE } from '../user/user.const';
 
 const router = Router();
-router.use(auth());
+router.use(auth(USER_ROLE.admin, USER_ROLE.faculty));
 router.get('/:id', FacultyController.getSingleFaculty);
 router.patch(
   '/:id',

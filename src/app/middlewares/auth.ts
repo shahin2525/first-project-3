@@ -6,34 +6,70 @@ import { StatusCodes } from 'http-status-codes';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../config';
 import { TUserRole } from '../modules/user/user.interface';
+import { User } from '../modules/user/user.model';
 //
 const auth = (...requiredRoles: TUserRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization;
     // console.log(token);
     if (!token) {
-      throw new AppError(StatusCodes.UNAUTHORIZED, 'you are unauthorize');
+      throw new AppError(StatusCodes.UNAUTHORIZED, 'you are unauthorize 1');
     }
 
-    // verify a token symmetric
-    jwt.verify(
+    // invalid token - synchronous
+
+    const decoded = jwt.verify(
       token,
       config.access_secret_token as string,
-      function (err, decoded) {
-        if (err) {
-          throw new AppError(StatusCodes.UNAUTHORIZED, 'you are not authorize');
-        }
+    ) as JwtPayload;
+    console.log(decoded);
+    const { data, iat } = decoded;
+    const { role, userId } = data;
 
-        const role = (decoded as JwtPayload)?.data?.role;
-        // console.log('mld dc role', role);
-        if (requiredRoles && !requiredRoles.includes(role)) {
-          throw new AppError(StatusCodes.UNAUTHORIZED, 'you are not authorize');
-        }
+    //   check user
+    const user = await User.userExists(userId);
+    // console.log(user);
+    if (!user) {
+      throw new AppError(StatusCodes.NOT_FOUND, 'user not found');
+    }
 
-        req.user = decoded as JwtPayload;
-        next();
-      },
-    );
+    // check is deleted true
+
+    const isUserDeleted = user?.isDeleted;
+    if (isUserDeleted) {
+      throw new AppError(StatusCodes.FORBIDDEN, 'user is deleted');
+    }
+
+    //   is user blocked
+
+    const isUserBlocked = user?.status === 'blocked';
+    if (isUserBlocked) {
+      throw new AppError(StatusCodes.FORBIDDEN, 'user is blocked');
+    }
+
+    if (requiredRoles && !requiredRoles.includes(role)) {
+      throw new AppError(StatusCodes.UNAUTHORIZED, 'you are not authorize 3');
+    }
+
+    req.user = decoded as JwtPayload;
+    next();
+
+    // err
+
+    // verify a token symmetric
+    // jwt.verify(
+    //   token,
+    //   config.access_secret_token as string,
+    //   function (err, decoded) {
+    //     if (err) {
+    //       throw new AppError(
+    //         StatusCodes.UNAUTHORIZED,
+    //         'you are not authorize 2',
+    //       );
+    //     }
+
+    //   },
+    // );
   });
 };
 export default auth;

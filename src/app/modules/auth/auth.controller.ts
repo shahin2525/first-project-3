@@ -2,14 +2,15 @@ import { RequestHandler } from 'express';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import { AuthServices } from './auth.service';
+import { StatusCodes } from 'http-status-codes';
 
 const loginUser: RequestHandler = catchAsync(async (req, res) => {
   const result = await AuthServices.loginUser(req.body);
 
   sendResponse(res, {
-    statusCode: 500,
+    statusCode: StatusCodes.OK,
     success: true,
-    message: 'login user  successfully',
+    message: 'login user successfully',
     data: result,
   });
 });
@@ -17,11 +18,11 @@ const loginUser: RequestHandler = catchAsync(async (req, res) => {
 const changePassword: RequestHandler = catchAsync(async (req, res) => {
   const user = req.user;
   const password = req.body;
-  console.log(user, password);
-  // const result = await AuthServices.changePassword(user, password);
+  // console.log(user, password);
+  await AuthServices.changePassword(user, password);
 
   sendResponse(res, {
-    statusCode: 500,
+    statusCode: StatusCodes.OK,
     success: true,
     message: 'change password successfully',
     data: null,
