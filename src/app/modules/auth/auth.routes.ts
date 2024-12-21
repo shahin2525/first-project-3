@@ -18,6 +18,12 @@ router.post(
   validateRequest(AuthValidations.changePasswordValidationSchema),
   AuthController.changePassword,
 );
+router.post(
+  '/refresh-token',
+  // auth(USER_ROLE.admin, USER_ROLE.faculty, USER_ROLE.student),
+  validateRequest(AuthValidations.refreshTokenValidationSchema),
+  AuthController.refreshToken,
+);
 // router.post(
 //   '/create-faculty',
 //   validateRequest(FacultyValidations.createFacultyValidationSchema),

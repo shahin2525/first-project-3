@@ -6,7 +6,7 @@ import { StatusCodes } from 'http-status-codes';
 
 const getAllFaculty: RequestHandler = catchAsync(async (req, res) => {
   const result = await FacultyServices.getAllFaculty(req.query);
-
+  console.log(req.cookies);
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,

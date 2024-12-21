@@ -6,7 +6,7 @@ import { JwtPayload } from 'jsonwebtoken';
 import config from '../../config';
 import { hash } from 'bcryptjs';
 import { createToken } from './auth.utils';
-
+import jwt from 'jsonwebtoken';
 const loginUser = async (payload: TLoginUser) => {
   //   check user
   const user = await User.userExists(payload.id);
@@ -50,13 +50,6 @@ const loginUser = async (payload: TLoginUser) => {
     config.refresh_secret_token as string,
     config.refresh_expires_in as string,
   );
-  //  jwt.sign(
-  //   {
-  //     data: jwtPayload,
-  //   },
-  //   config.access_secret_token as string,
-  //   { expiresIn: '10d' },
-  // );
 
   return {
     accessToken,
@@ -114,7 +107,65 @@ const changePassword = async (
   );
   return result;
 };
+
+// refresh token
+const refreshToken = async (token: string) => {
+  // invalid token - synchronous
+
+  const decoded = jwt.verify(
+    token,
+    config.refresh_secret_token as string,
+  ) as JwtPayload;
+  console.log(decoded);
+  const { data, iat } = decoded;
+  const { userId } = data;
+
+  //   check user
+  const user = await User.userExists(userId);
+  // console.log(user);
+  if (!user) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'user not found');
+  }
+
+  // check is deleted true
+
+  const isUserDeleted = user?.isDeleted;
+  if (isUserDeleted) {
+    throw new AppError(StatusCodes.FORBIDDEN, 'user is deleted');
+  }
+
+  //   is user blocked
+
+  const isUserBlocked = user?.status === 'blocked';
+  if (isUserBlocked) {
+    throw new AppError(StatusCodes.FORBIDDEN, 'user is blocked');
+  }
+
+  // password change timesAt === true
+
+  if (
+    user.changePasswordAt &&
+    User.isJWTIssuedBeforePasswordChanged(user.changePasswordAt, iat as number)
+  ) {
+    throw new AppError(StatusCodes.UNAUTHORIZED, 'you are not authorize 1');
+  }
+
+  const jwtPayload = {
+    userId: user.id,
+    role: user.role,
+  };
+  const accessToken = createToken(
+    jwtPayload,
+    config.access_secret_token as string,
+    config.access_expires_in as string,
+  );
+
+  return {
+    accessToken,
+  };
+};
 export const AuthServices = {
   loginUser,
   changePassword,
+  refreshToken,
 };
