@@ -116,10 +116,10 @@ const refreshToken = async (token: string) => {
     token,
     config.refresh_secret_token as string,
   ) as JwtPayload;
-  console.log(decoded);
+
   const { data, iat } = decoded;
   const { userId } = data;
-
+  // dfd
   //   check user
   const user = await User.userExists(userId);
   // console.log(user);
