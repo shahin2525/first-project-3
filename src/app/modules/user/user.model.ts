@@ -7,6 +7,7 @@ import { StatusCodes } from 'http-status-codes';
 const userSchema = new Schema<TUser, UserModel>(
   {
     id: { type: String, unique: true },
+    email: { type: String, unique: true },
     password: { type: String, select: 0 },
     needsPasswordChange: { type: Boolean, default: true },
     role: {

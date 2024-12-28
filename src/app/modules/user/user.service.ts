@@ -37,6 +37,7 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
     throw new Error('academic semester is not found');
   }
   userData.role = 'student';
+  userData.email = payload?.email;
 
   // crete transaction
   const session = await mongoose.startSession();
@@ -76,6 +77,7 @@ const creteFacultyIntoDB = async (password: string, payload: TFaculty) => {
   const userData: Partial<TUser> = {};
   userData.password = password || config.default_password;
   userData.role = 'faculty';
+  userData.email = payload?.email;
   const academicDepartment = await AcademicDepartment.findById(
     payload.academicDepartment,
   );
@@ -132,7 +134,7 @@ const creteAdminIntoDB = async (password: string, payload: TFaculty) => {
   const userData: Partial<TUser> = {};
   userData.password = password || config.default_password;
   userData.role = 'admin';
-
+  userData.email = payload?.email;
   // create transaction
   const session = await mongoose.startSession();
   try {
