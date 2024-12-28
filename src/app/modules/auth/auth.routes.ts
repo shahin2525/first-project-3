@@ -20,9 +20,15 @@ router.post(
 );
 router.post(
   '/refresh-token',
-  // auth(USER_ROLE.admin, USER_ROLE.faculty, USER_ROLE.student),
+
   validateRequest(AuthValidations.refreshTokenValidationSchema),
   AuthController.refreshToken,
+);
+router.post(
+  '/forget-password',
+
+  validateRequest(AuthValidations.forgetPasswordValidationSchema),
+  AuthController.forgetPassword,
 );
 // router.post(
 //   '/create-faculty',
