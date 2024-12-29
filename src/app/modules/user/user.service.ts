@@ -190,10 +190,17 @@ const getMeFromDB = async (userId: string, role: string) => {
 
   return result;
 };
+const changeUserStatusFromDB = async (id: string, payload: Partial<TUser>) => {
+  const result = await User.findByIdAndUpdate(id, payload, { new: true });
+  console.log(result);
+  return result;
+};
+
 export const UserServices = {
   createStudentIntoDB,
   creteFacultyIntoDB,
 
   creteAdminIntoDB,
   getMeFromDB,
+  changeUserStatusFromDB,
 };

@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';
 import config from '../../config';
 import AppError from '../../error/appError';
 import { StatusCodes } from 'http-status-codes';
+import { UserStatus } from './user.const';
 const userSchema = new Schema<TUser, UserModel>(
   {
     id: { type: String, unique: true },
@@ -18,7 +19,7 @@ const userSchema = new Schema<TUser, UserModel>(
     status: {
       type: String,
 
-      enum: ['in-progress', 'blocked'],
+      enum: UserStatus,
       default: 'in-progress',
     },
     isDeleted: { type: Boolean, default: false },

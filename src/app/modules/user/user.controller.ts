@@ -62,9 +62,28 @@ const getMe: RequestHandler = catchAsync(async (req, res) => {
     data: result,
   });
 });
+
+// change user status
+const changeUserStatus: RequestHandler = catchAsync(async (req, res) => {
+  // const decode = req.user;
+  // const userId = decode?.data?.userId;
+  // const role = decode?.data?.role;
+  const id = req.params.id;
+  const status = req.body.status;
+
+  const result = await UserServices.changeUserStatusFromDB(id, status);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'change user status successfully',
+    data: result,
+  });
+});
 export const UserControllers = {
   createStudent,
   createFaculty,
   createAdmin,
   getMe,
+  changeUserStatus,
 };
