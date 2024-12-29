@@ -27,8 +27,11 @@ router.post(
   validateRequest(AdminValidations.createAdminValidationSchema),
   UserControllers.createAdmin,
 );
-// router.get('/', StudentController.getAllStudent);
-// router.get('/:id', StudentController.getSingleStudent);
-// router.patch('/:id', StudentController.updateStudent);
-// router.delete('/:id', StudentController.deleteStudent);
+router.get(
+  '/get-me',
+  // auth(USER_ROLE.admin),
+
+  UserControllers.getMe,
+);
+
 export const UserRoutes = router;

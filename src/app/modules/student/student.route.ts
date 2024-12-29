@@ -8,7 +8,11 @@ import { USER_ROLE } from '../user/user.const';
 const router = Router();
 // router.post('/create-student', StudentController.createStudent);
 router.use(auth(USER_ROLE.student));
-router.get('/:id', StudentController.getSingleStudent);
+router.get(
+  '/:id',
+  auth('admin', 'faculty'),
+  StudentController.getSingleStudent,
+);
 router.patch(
   '/:id',
   validateRequest(StudentValidations.UpdateStudentValidationSchema),

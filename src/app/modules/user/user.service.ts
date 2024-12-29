@@ -16,6 +16,7 @@ import { AcademicDepartment } from '../academicDepartment/academicDepartment.mod
 import { TFaculty } from '../faculty/faculty.interface';
 import { Faculty } from '../faculty/faculty.model';
 import { Admin } from '../admin/admin.model';
+import { verifyToken } from '../auth/auth.utils';
 
 // create student
 const createStudentIntoDB = async (password: string, payload: TStudent) => {
@@ -174,9 +175,25 @@ const creteAdminIntoDB = async (password: string, payload: TFaculty) => {
     throw new Error(error);
   }
 };
+
+const getMeFromDB = async (token: string) => {
+  const decode = verifyToken(token, config.access_secret_token as string);
+  console.log(decode);
+  const userId = decode?.data?.userId;
+  const role = decode?.data?.role;
+  // const { userId, role } = data;
+  let result = null;
+
+  if (role === 'student') {
+    result = await Student.findOne({ id: userId });
+  }
+
+  return result;
+};
 export const UserServices = {
   createStudentIntoDB,
   creteFacultyIntoDB,
 
   creteAdminIntoDB,
+  getMeFromDB,
 };
