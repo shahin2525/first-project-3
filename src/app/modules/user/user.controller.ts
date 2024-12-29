@@ -1,9 +1,8 @@
 import { RequestHandler } from 'express';
+import { StatusCodes } from 'http-status-codes';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import { UserServices } from './user.service';
-import { StatusCodes } from 'http-status-codes';
-import AppError from '../../error/appError';
 
 // create student
 const createStudent: RequestHandler = catchAsync(async (req, res) => {
@@ -50,12 +49,11 @@ const createAdmin: RequestHandler = catchAsync(async (req, res) => {
 // get me
 // create admin
 const getMe: RequestHandler = catchAsync(async (req, res) => {
-  const token = req.headers.authorization;
-  if (!token) {
-    throw new AppError(StatusCodes.UNAUTHORIZED, 'unauthorize');
-  }
+  const decode = req.user;
+  const userId = decode?.data?.userId;
+  const role = decode?.data?.role;
 
-  const result = await UserServices.getMeFromDB(token);
+  const result = await UserServices.getMeFromDB(userId, role);
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,

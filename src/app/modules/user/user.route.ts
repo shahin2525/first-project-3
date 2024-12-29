@@ -29,7 +29,7 @@ router.post(
 );
 router.get(
   '/get-me',
-  // auth(USER_ROLE.admin),
+  auth('admin', 'faculty', 'student'),
 
   UserControllers.getMe,
 );

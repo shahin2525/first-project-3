@@ -2,7 +2,11 @@ import { StatusCodes } from 'http-status-codes';
 import mongoose from 'mongoose';
 import config from '../../config';
 import AppError from '../../error/appError';
+import { AcademicDepartment } from '../academicDepartment/academicDepartment.model';
 import AcademicSemester from '../academicSemester/academicSemester.model';
+import { Admin } from '../admin/admin.model';
+import { TFaculty } from '../faculty/faculty.interface';
+import { Faculty } from '../faculty/faculty.model';
 import { TStudent } from '../student/student.interface';
 import Student from '../student/student.model';
 import { TUser } from './user.interface';
@@ -12,11 +16,6 @@ import {
   generateFacultyId,
   generateStudentId,
 } from './user.utils';
-import { AcademicDepartment } from '../academicDepartment/academicDepartment.model';
-import { TFaculty } from '../faculty/faculty.interface';
-import { Faculty } from '../faculty/faculty.model';
-import { Admin } from '../admin/admin.model';
-import { verifyToken } from '../auth/auth.utils';
 
 // create student
 const createStudentIntoDB = async (password: string, payload: TStudent) => {
@@ -176,16 +175,17 @@ const creteAdminIntoDB = async (password: string, payload: TFaculty) => {
   }
 };
 
-const getMeFromDB = async (token: string) => {
-  const decode = verifyToken(token, config.access_secret_token as string);
-  console.log(decode);
-  const userId = decode?.data?.userId;
-  const role = decode?.data?.role;
-  // const { userId, role } = data;
+const getMeFromDB = async (userId: string, role: string) => {
   let result = null;
 
   if (role === 'student') {
     result = await Student.findOne({ id: userId });
+  }
+  if (role === 'admin') {
+    result = await Admin.findOne({ id: userId });
+  }
+  if (role === 'faculty') {
+    result = await Faculty.findOne({ id: userId });
   }
 
   return result;
