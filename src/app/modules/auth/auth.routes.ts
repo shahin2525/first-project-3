@@ -30,18 +30,12 @@ router.post(
   validateRequest(AuthValidations.forgetPasswordValidationSchema),
   AuthController.forgetPassword,
 );
-// router.post(
-//   '/create-faculty',
-//   validateRequest(FacultyValidations.createFacultyValidationSchema),
-//   UserControllers.createFaculty,
-// );
-// router.post(
-//   '/create-admin',
-//   validateRequest(AdminValidations.createAdminValidationSchema),
-//   UserControllers.createAdmin,
-// );
-// router.get('/', StudentController.getAllStudent);
-// router.get('/:id', StudentController.getSingleStudent);
-// router.patch('/:id', StudentController.updateStudent);
-// router.delete('/:id', StudentController.deleteStudent);
+// reset password
+
+router.post(
+  '/reset-password',
+
+  validateRequest(AuthValidations.resetPasswordValidationSchema),
+  AuthController.resetPassword,
+);
 export const AuthRoutes = router;
