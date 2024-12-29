@@ -12,4 +12,5 @@ export default {
   refresh_secret_token: process.env.REFRESH_SECRET_TOKEN,
   access_expires_in: process.env.ACCESS_EXPIRES_IN,
   refresh_expires_in: process.env.REFRESH_EXPIRES_IN,
+  reset_password_ui_link: process.env.RESET_password_UI_LINK,
 };
