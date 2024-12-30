@@ -7,7 +7,7 @@ export const sendEmail = async (to: string, html: string) => {
     secure: config.node_env === 'production', // true for port 465, false for other ports
     auth: {
       user: 'shahin451999@gmail.com',
-      pass: 'yebw bbxo araq mjvz',
+      pass: config.smtp_pass_key,
     },
   });
 

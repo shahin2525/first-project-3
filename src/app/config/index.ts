@@ -13,4 +13,8 @@ export default {
   access_expires_in: process.env.ACCESS_EXPIRES_IN,
   refresh_expires_in: process.env.REFRESH_EXPIRES_IN,
   reset_password_ui_link: process.env.RESET_password_UI_LINK,
+  cloud_name: process.env.cloudinary_cloud_name,
+  api_key: process.env.cloudinary_api_key,
+  api_secret: process.env.cloudinary_api_secret,
+  smtp_pass_key: process.env.smtp_pass_key,
 };
