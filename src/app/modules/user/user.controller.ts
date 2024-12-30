@@ -69,9 +69,9 @@ const changeUserStatus: RequestHandler = catchAsync(async (req, res) => {
   // const userId = decode?.data?.userId;
   // const role = decode?.data?.role;
   const id = req.params.id;
-  const status = req.body.status;
+  // const status = req.body.status;
 
-  const result = await UserServices.changeUserStatusFromDB(id, status);
+  const result = await UserServices.changeUserStatusFromDB(id, req.body);
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,

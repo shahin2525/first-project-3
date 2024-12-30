@@ -16,6 +16,7 @@ import {
   generateFacultyId,
   generateStudentId,
 } from './user.utils';
+import { sendImageToCloudinary } from '../../utils/sendImageCludinary';
 
 // create student
 const createStudentIntoDB = async (password: string, payload: TStudent) => {
@@ -45,6 +46,8 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
     session.startTransaction();
     // generate userId
     userData.id = await generateStudentId(academicSemester);
+
+    sendImageToCloudinary();
     // create new User
 
     const newUser = await User.create([userData], { session });
@@ -190,9 +193,18 @@ const getMeFromDB = async (userId: string, role: string) => {
 
   return result;
 };
-const changeUserStatusFromDB = async (id: string, payload: Partial<TUser>) => {
+const changeUserStatusFromDB = async (
+  id: string,
+  payload: { status: string },
+) => {
+  console.log(payload);
+  // console.log(status);
   const result = await User.findByIdAndUpdate(id, payload, { new: true });
-  console.log(result);
+
+  //   const result = await User.findByIdAndUpdate(id, payload, {
+  //  new: true,
+  //});
+  // console.log(result);
   return result;
 };
 
