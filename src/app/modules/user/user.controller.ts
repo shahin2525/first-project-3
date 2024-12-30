@@ -6,15 +6,17 @@ import { UserServices } from './user.service';
 
 // create student
 const createStudent: RequestHandler = catchAsync(async (req, res) => {
-  const { password, student } = req.body;
+  console.log(req.file, 'file');
+  console.log(req.body);
+  // const { password, student } = req.body;
 
-  const result = await UserServices.createStudentIntoDB(password, student);
+  // const result = await UserServices.createStudentIntoDB(password, student);
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
     message: 'student create successfully',
-    data: result,
+    data: null,
   });
 });
 
