@@ -1,24 +1,73 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { v2 as cloudinary } from 'cloudinary';
 import config from '../config';
 import multer from 'multer';
-export const sendImageToCloudinary = () => {
-  // Configuration
-  cloudinary.config({
-    cloud_name: config.cloud_name,
-    api_key: config.api_key,
-    api_secret: config.api_secret, // Click 'View API Keys' above to copy your API secret
-  });
+import fs from 'fs';
+interface CloudinaryUploadResult {
+  secure_url: string;
+  public_id: string;
+  [key: string]: any; // To account for additional properties
+}
 
-  // Upload an image
-  cloudinary.uploader.upload(
-    'https://res.cloudinary.com/demo/image/upload/getting-started/shoes.jpg',
-    {
-      public_id: 'shoes',
-    },
-    function (error, result) {
-      // console.log(result);
-    },
-  );
+cloudinary.config({
+  cloud_name: config.cloud_name,
+  api_key: config.api_key,
+  api_secret: config.api_secret, // Click 'View API Keys' above to copy your API secret
+});
+// export const sendImageToCloudinary = (imageName: string, path: string) => {
+//   // Configuration
+
+//   return new Promise((resolve, reject) => {
+//     // Upload an image
+//     cloudinary.uploader.upload(
+//       path,
+//       {
+//         public_id: imageName,
+//       },
+//       function (error, result) {
+//         if (error) {
+//           reject(error);
+//         }
+//         resolve(result);
+//         console.log(result);
+
+//         // Remove the file
+//         fs.unlink(path, (err) => {
+//           if (err) {
+//             console.log(err);
+//           } else {
+//             console.log('file is deleted');
+//           }
+//         });
+//       },
+//     );
+//   });
+// };
+
+export const sendImageToCloudinary = (
+  imageName: string,
+  path: string,
+): Promise<CloudinaryUploadResult> => {
+  return new Promise((resolve, reject) => {
+    cloudinary.uploader.upload(
+      path,
+      { public_id: imageName },
+      function (error, result) {
+        if (error) {
+          reject(error);
+        }
+        resolve(result as CloudinaryUploadResult);
+        // delete a file asynchronously
+        fs.unlink(path, (err) => {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log('File is deleted.');
+          }
+        });
+      },
+    );
+  });
 };
 
 const storage = multer.diskStorage({

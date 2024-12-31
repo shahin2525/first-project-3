@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { StatusCodes } from 'http-status-codes';
 import mongoose from 'mongoose';
 import config from '../../config';
@@ -19,7 +20,11 @@ import {
 import { sendImageToCloudinary } from '../../utils/sendImageCludinary';
 
 // create student
-const createStudentIntoDB = async (password: string, payload: TStudent) => {
+const createStudentIntoDB = async (
+  file: any,
+  password: string,
+  payload: TStudent,
+) => {
   // if (await Student.doesUserExists(payload.id)) {
   //   throw new Error('user already exists');
   // }
@@ -46,8 +51,15 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
     session.startTransaction();
     // generate userId
     userData.id = await generateStudentId(academicSemester);
+    const path = file?.path;
 
-    sendImageToCloudinary();
+    const imageName = `${userData.id}${payload?.name?.firstName}`;
+
+    const imgUrl = (await sendImageToCloudinary(imageName, path)) || {};
+
+    // if (!secure_url) {
+    //   throw new Error('Failed to upload image to Cloudinary');
+    // }
     // create new User
 
     const newUser = await User.create([userData], { session });
@@ -57,6 +69,7 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
     }
     payload.id = newUser[0].id;
     payload.user = newUser[0]._id;
+    payload.profileImg = imgUrl?.secure_url;
 
     //   create student
     const result = await Student.create([payload], { session });
